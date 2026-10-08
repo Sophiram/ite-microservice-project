@@ -1,0 +1,9 @@
+plugins {
+    id 'spring-common-conventions'
+}
+
+dependencies {
+    api 'kh.edu.istad:customer-domain-core'
+
+
+}
