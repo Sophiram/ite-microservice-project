@@ -4,6 +4,6 @@ plugins {
 
 dependencies {
     api 'kh.edu.istad:customer-domain-core'
-
+    implementation 'io.projectreactor:reactor-core'
 
 }

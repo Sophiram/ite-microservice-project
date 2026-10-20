@@ -4,39 +4,66 @@ import kh.edu.istad.common.domain.valueobject.CustomerId;
 import kh.edu.istad.platform.customer.domain.entity.Customer;
 import kh.edu.istad.platform.customer.domain.valueobject.Email;
 import kh.edu.istad.platform.customer.domain.valueobject.PhoneNumber;
-import kh.edu.istad.platform.customer.persistence.entity.CustomerEntity;
-import org.springframework.stereotype.Component;
+import kh.edu.istad.platform.customer.persistence.document.CustomerDocument;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Component
-public class CustomerPersistenceMapper {
+import java.util.UUID;
 
-    public CustomerEntity toEntity(Customer customer) {
-        if (customer == null) {
-            return null;
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface CustomerPersistenceMapper {
+
+    Logger log = LoggerFactory.getLogger(CustomerPersistenceMapper.class);
+
+    // Document → Domain
+    //
+    // Customer uses a private Builder pattern (no setters).
+    // Written manually as a default method using Customer.Builder.
+    //
+
+    default Customer toDomain(CustomerDocument doc) {
+        if (doc == null) return null;
+
+        CustomerId customerId = null;
+        if (doc.getId() != null) {
+            try {
+                customerId = new CustomerId(UUID.fromString(doc.getId()));
+            } catch (IllegalArgumentException e) {
+                log.warn("Skipping legacy document with non-UUID id='{}'. " +
+                         "Please migrate or delete this record from MongoDB.", doc.getId());
+                return null;
+            }
         }
-        return CustomerEntity.builder()
-                .id(customer.getId() != null ? customer.getId().value() : null)
-                .username(customer.getUsername())
-                .familyName(customer.getFamilyName())
-                .givenName(customer.getGivenName())
-                .email(customer.getEmail() != null ? customer.getEmail().value() : null)
-                .phoneNumber(customer.getPhoneNumber() != null ? customer.getPhoneNumber().value() : null)
-                .status(customer.getStatus())
-                .build();
-    }
 
-    public Customer toDomain(CustomerEntity entity) {
-        if (entity == null) {
-            return null;
+        Email email = null;
+        if (doc.getEmail() != null) {
+            email = new Email(doc.getEmail());
         }
+
+        PhoneNumber phoneNumber = null;
+        if (doc.getPhoneNumber() != null) {
+            phoneNumber = new PhoneNumber(doc.getPhoneNumber());
+        }
+
         return Customer.Builder.builder()
-                .id(entity.getId() != null ? new CustomerId(entity.getId()) : null)
-                .username(entity.getUsername())
-                .familyName(entity.getFamilyName())
-                .givenName(entity.getGivenName())
-                .email(entity.getEmail() != null ? new Email(entity.getEmail()) : null)
-                .phoneNumber(entity.getPhoneNumber() != null ? new PhoneNumber(entity.getPhoneNumber()) : null)
-                .status(entity.getStatus())
+                .id(customerId)
+                .username(doc.getUsername())
+                .familyName(doc.getFamilyName())
+                .givenName(doc.getGivenName())
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .status(doc.getStatus())
+                .segment(doc.getSegment())
                 .build();
     }
+
+    // Domain → Document
+    @Mapping(source = "id.value",           target = "id")
+    @Mapping(source = "email.value",        target = "email")
+    @Mapping(source = "phoneNumber.value",  target = "phoneNumber")
+    @Mapping(source = "segment",            target = "segment")
+    CustomerDocument toDocument(Customer customer);
 }

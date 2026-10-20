@@ -1,106 +1,63 @@
 package kh.edu.istad.platform.customer.restapi.exception;
 
-import jakarta.servlet.http.HttpServletRequest;
 import kh.edu.istad.platform.customer.domain.exception.CustomerDomainException;
 import kh.edu.istad.platform.customer.domain.exception.CustomerNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.time.LocalDateTime;
+import java.net.URI;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpServletRequest request
-    ) {
-        Map<String, String> fieldErrors = new HashMap<>();
-        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-            fieldErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-
-        ErrorResponse response = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message("Validation failed")
-                .path(request.getRequestURI())
-                .fieldErrors(fieldErrors)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(
-            ValidationException ex,
-            HttpServletRequest request
-    ) {
-        ErrorResponse response = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .fieldErrors(ex.getErrors().isEmpty() ? null : ex.getErrors())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
     @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleCustomerNotFound(
-            CustomerNotFoundException ex,
-            HttpServletRequest request
-    ) {
-        ErrorResponse response = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    public ProblemDetail handleCustomerNotFound(CustomerNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Customer Not Found");
+        problemDetail.setType(URI.create("about:blank"));
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
     }
 
     @ExceptionHandler(CustomerDomainException.class)
-    public ResponseEntity<ErrorResponse> handleCustomerDomainException(
-            CustomerDomainException ex,
-            HttpServletRequest request
-    ) {
-        ErrorResponse response = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ProblemDetail handleCustomerDomain(CustomerDomainException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problemDetail.setTitle("Customer Domain Violation");
+        problemDetail.setType(URI.create("about:blank"));
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralException(
-            Exception ex,
-            HttpServletRequest request
-    ) {
-        ErrorResponse response = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ProblemDetail handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String detail = String.format("Failed to convert parameter '%s' with value '%s' to required type '%s'",
+                ex.getName(), ex.getValue(), ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "unknown");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
+        problemDetail.setTitle("Parameter Type Mismatch");
+        problemDetail.setType(URI.create("about:blank"));
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleValidation(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage())
+        );
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failed");
+        problemDetail.setTitle("Validation Error");
+        problemDetail.setType(URI.create("about:blank"));
+        problemDetail.setProperty("errors", errors);
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
     }
 }
