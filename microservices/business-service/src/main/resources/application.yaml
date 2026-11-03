@@ -1,2 +1,16 @@
 server:
   port: 9090
+
+spring:
+  application:
+    name: business-service
+  profiles:
+    active: dev
+  cloud:
+    consul:
+      discovery:
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        ip-address: 127.0.0.1
+        prefer-ip-address: true
+        service-name: ${spring.application.name}
+        instance-id: ${spring.application.name}-${random.value}

@@ -1,0 +1,13 @@
+package kh.edu.istad.platform.order.domain.exception;
+
+import kh.edu.istad.common.domain.exception.DomainException;
+
+public class OrderDomainException extends DomainException {
+    public OrderDomainException(Throwable cause) {
+        super(cause);
+    }
+
+    public OrderDomainException(String message) {
+        super(message);
+    }
+}

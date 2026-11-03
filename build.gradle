@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+//    alias(libs.plugins.java.common.conventions)
 }
 
 group = 'com.istad'
@@ -16,4 +17,11 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform()}
+    useJUnitPlatform()
+}
+
+tasks.named('build') {
+    gradle.includedBuilds.each { included ->
+        dependsOn included.task(':build')
+    }
+}

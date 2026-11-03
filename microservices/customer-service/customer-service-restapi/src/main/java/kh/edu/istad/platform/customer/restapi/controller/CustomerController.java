@@ -1,9 +1,11 @@
 package kh.edu.istad.platform.customer.restapi.controller;
 
 import jakarta.validation.Valid;
+import kh.edu.istad.common.domain.exception.DomainException;
 import kh.edu.istad.platform.customer.domain.dto.CustomerFilter;
 import kh.edu.istad.platform.customer.domain.dto.CustomerStatistic;
 import kh.edu.istad.platform.customer.domain.dto.DeactivateCustomerCommand;
+import kh.edu.istad.platform.customer.domain.entity.Customer;
 import kh.edu.istad.platform.customer.domain.usecase.*;
 import kh.edu.istad.platform.customer.domain.valueobject.CustomerSegment;
 import kh.edu.istad.platform.customer.domain.valueobject.CustomerStatus;

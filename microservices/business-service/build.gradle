@@ -1,9 +1,14 @@
 plugins {
-    id 'spring-boot-common-conventions'
+//    id 'spring-boot-common-conventions'
+    alias(libs.plugins.spring.cloud.common.conventions)
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    //    implementation 'org.springframework.cloud:spring-cloud-starter-consul-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation(libs.spring.boot.starter.web)
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 

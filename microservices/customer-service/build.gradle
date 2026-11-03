@@ -1,10 +1,19 @@
 plugins {
-    id 'spring-boot-common-conventions'
+    alias(libs.plugins.spring.boot.common.conventions)
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+bootJar {
+    enabled = false
+}
 
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.dependencySubstitution {
+            substitute module('kh.edu.istad:customer-domain-core') using project(':customer-service-domain:customer-domain-core')
+            substitute module('kh.edu.istad:customer-application-service') using project(':customer-service-domain:customer-application-service')
+            substitute module('kh.edu.istad:customer-service-message') using project(':customer-service-message')
+            substitute module('kh.edu.istad:customer-service-restapi') using project(':customer-service-restapi')
+            substitute module('kh.edu.istad:customer-service-persistence') using project(':customer-service-persistence')
+        }
+    }
 }

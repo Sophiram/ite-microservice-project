@@ -1,0 +1,18 @@
+plugins {
+    id 'spring-boot-common-conventions'
+}
+
+bootJar {
+    enabled = false
+}
+
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.dependencySubstitution {
+            substitute module('kh.edu.istad:order-application-service') using project(':order-service-domain:order-application-service')
+            substitute module('kh.edu.istad:order-domain-core') using project(':order-service-domain:order-domain-core')
+            substitute module('kh.edu.istad:order-service-client') using project(':order-service-client')
+            substitute module('kh.edu.istad:order-service-persistence') using project(':order-service-persistence')
+        }
+    }
+}

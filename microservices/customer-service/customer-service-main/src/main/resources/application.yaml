@@ -18,6 +18,27 @@ server:
 #        format_sql: true
 
 spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: customer-service
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Point at the auth-server issuer so the JWK Set is fetched automatically.
+          # Override via SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI env var.
+          issuer-uri: ${AUTH_SERVER_ISSUER_URI:http://localhost:9000}
+
+  cloud:
+    consul:
+      discovery:
+        instance-id: ${spring.application.name}-${random.value}
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        ip-address: 127.0.0.1
+        prefer-ip-address: true
+        service-name: customer-service
   mongodb:
     host: localhost
     port: 2026

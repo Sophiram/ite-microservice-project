@@ -1,9 +1,11 @@
 plugins {
-    id 'java-common-conventions'
+//    id 'java-common-conventions'
+    alias(libs.plugins.java.common.conventions)
 }
 
 dependencies {
 //    implementation()
-    api 'kh.edu.istad:istad-common-domain'
+//    api 'kh.edu.istad:istad-common-domain'
+    api(libs.istad.common.domain)
 }
 

@@ -1,0 +1,77 @@
+server:
+  port: ${SERVER_PORT:9092}
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:9543/db_order
+    username: iteuser
+    password: qwerqwer
+  liquibase:
+    enabled: true
+    url: jdbc:postgresql://localhost:9543/db_order
+    user: iteuser
+    password: qwerqwer
+    driver-class-name: org.postgresql.Driver
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+  application:
+    name: order-service
+  profiles:
+    active: dev
+  config:
+    import:
+      - "optional:consul:"     # Read config from Consul when it start
+  cloud:
+    consul:
+      config:
+        enabled: true
+        format: yaml
+        fail-fast: false
+        watch:
+          enabled: true  # Real Time Change
+          wait-time: 5
+      discovery:
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        ip-address: 127.0.0.1
+        prefer-ip-address: true
+        service-name: order-service
+        instance-id: ${spring.application.name}-${random.value}
+
+  # ------------------------------------------------------------------
+  # OAuth2 client: order-service uses client_credentials to call
+  # customer-service and business-service protected endpoints.
+  # ------------------------------------------------------------------
+  security:
+    oauth2:
+      client:
+        registration:
+          order-service:
+            provider: spring-auth-server
+            client-id: order-service
+            # Secret matches what DataSeeder encodes. Use ORDER_CLIENT_SECRET env var in prod.
+            client-secret: ${ORDER_CLIENT_SECRET:order-secret}
+            authorization-grant-type: client_credentials
+            scope: customer.read, business.read
+        provider:
+          spring-auth-server:
+            # Points at the Spring Authorization Server token endpoint.
+            # Override via AUTH_SERVER_TOKEN_URI env var.
+            token-uri: ${AUTH_SERVER_TOKEN_URI:http://localhost:9000/oauth2/token}
+
+  # HTTP service client base URLs (consumed by ClientConfig @Value injection)
+  http:
+    serviceclient:
+      customer-service:
+        connect-timeout:
+          seconds: 10
+        read-timeout:
+          seconds: 10
+        base-url: lb://customer-service
+      business-service:
+        base-url: lb://business-service
+
+
+
+
+
+
+

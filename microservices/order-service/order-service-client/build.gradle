@@ -1,0 +1,32 @@
+plugins {
+//    id 'spring-common-conventions'
+    alias(libs.plugins.spring.common.conventions)
+    alias(libs.plugins.spring.cloud.common.conventions)
+//    id 'spring-cloud-common-conventions'
+
+}
+
+dependencies {
+//    implementation 'io.projectreactor:reactor-core'
+//    implementation 'kh.edu.istad:order-application-service'
+//    implementation 'org.springframework.boot:spring-boot-starter-webclient'
+    implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+
+    implementation libs.reactor.core
+    implementation libs.order.application.service
+    implementation libs.spring.boot.starter.webclient
+
+    // OAuth2 client (ReactiveOAuth2AuthorizedClientManager, client_credentials grant)
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    testImplementation 'io.projectreactor:reactor-test'
+    // MockWebServer for the OAuth2 bearer-token integration test
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
+    testImplementation 'com.squareup.okhttp3:okhttp:4.12.0'
+}
+
+bootJar {
+    enabled = false
+}

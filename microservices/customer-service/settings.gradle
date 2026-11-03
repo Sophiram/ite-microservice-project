@@ -10,10 +10,17 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
     }
+    versionCatalogs {
+        libs {
+            from(files("../../gradle/libs.versions.toml"))
+        }
+    }
 }
 
-
 rootProject.name = 'customer-service'
+
+includeBuild '../../istad-common'
+
 include 'customer-service-main'
 include 'customer-service-domain:customer-domain-core'
 include 'customer-service-domain:customer-application-service'
