@@ -1,0 +1,31 @@
+plugins {
+    id 'spring-boot-common-conventions'
+    id 'com.google.protobuf' version '0.9.6'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-grpc-server'
+    implementation 'org.springframework.boot:spring-boot-starter-grpc-client'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.google.protobuf:protobuf-java:4.36.2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:4.36.2"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.84.1"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                grpc {}
+            }
+        }
+    }
+}

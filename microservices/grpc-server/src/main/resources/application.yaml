@@ -1,0 +1,13 @@
+server:
+  port: 1011
+
+spring:
+  application:
+    name: grpc-server
+  grpc:
+    server:
+      port: 1012
+    client:
+      channel:
+        payment-service:
+          target: "static://127.0.0.1:1012"

@@ -1,0 +1,47 @@
+[
+  {
+    "customerId": "c94cf3fb-371b-434c-90e4-03d7cf67efcf",
+    "username": "sophiram1",
+    "familyName": "Sorn",
+    "givenName": "Sophiram",
+    "email": "sophiramjr@gmail.com",
+    "phoneNumber": "0973918206",
+    "status": "ACTIVE"
+  },
+  {
+    "customerId": "392841f6-ea00-4d6b-87a1-811d36ebf8f8",
+    "username": "sophiram2",
+    "familyName": "Sorn",
+    "givenName": "Sophiram",
+    "email": "sophiramjr@gmail.com",
+    "phoneNumber": "0973918206",
+    "status": "ACTIVE"
+  },
+  {
+    "customerId": "993afd67-8eff-4851-a1a5-f5f13199dcf7",
+    "username": "sophiram3",
+    "familyName": "Sorn",
+    "givenName": "sophiram3",
+    "email": "sophiram3@gmail.com",
+    "phoneNumber": "0973918206",
+    "status": "ACTIVE"
+  },
+  {
+    "customerId": "9f596ce9-4f59-4560-ae21-c86d9f835c25",
+    "username": "sophiram4",
+    "familyName": "Sorn",
+    "givenName": "sophiram4",
+    "email": "sophiram4@gmail.com",
+    "phoneNumber": "0973918206",
+    "status": "ACTIVE"
+  },
+  {
+    "customerId": "cefac811-befe-4c1a-a0d9-3cb3d4fae0e9",
+    "username": "sophiram5",
+    "familyName": "Sorn",
+    "givenName": "sophiram5",
+    "email": "sophiram5@gmail.com",
+    "phoneNumber": "0973918206",
+    "status": "ACTIVE"
+  }
+]

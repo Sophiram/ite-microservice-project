@@ -1,0 +1,26 @@
+server:
+  port: 9000
+
+logging:
+  level:
+    org.springframework.security: trace
+
+spring:
+  application:
+    name: spring-auth-server
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:9543/db_oauth2}
+    username: ${DB_USERNAME:iteuser}
+    password: ${DB_PASSWORD:qwerqwer}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  issuer: ${ISSUER_URI:http://localhost:9000}

@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75cc181e-cdf7-4d01-8832-e6f659d55734" name="Changes" comment="" />
+    <list default="true" id="75cc181e-cdf7-4d01-8832-e6f659d55734" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -12,6 +14,7 @@
   </component>
   <component name="DatabaseLocalColorSettings">
     <colors>
+      <entry key="7cc8178d-c873-464f-9e0b-14f61090dab8" value="" />
       <entry key="8b97adda-edc2-4544-957d-6e4a583f4fba" value="" />
     </colors>
   </component>
@@ -22,16 +25,73 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+    <projectState path="$PROJECT_DIR$/istad-common">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/microservices/gateway-server">
+      <ProjectState />
+    </projectState>
   </component>
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="istad-common" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="istad-ite-project" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="istad-ite-project" type="f1a62948:ProjectNode" />
+                <item name="microservices" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="istad-ite-project" type="f1a62948:ProjectNode" />
+                <item name="microservices" type="2d1252cf:ModuleNode" />
+                <item name="customer-service" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="istad-ite-project" type="f1a62948:ProjectNode" />
+                <item name="microservices" type="2d1252cf:ModuleNode" />
+                <item name="customer-service" type="2d1252cf:ModuleNode" />
+                <item name="customer-service-main" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="istad-ite-project" type="f1a62948:ProjectNode" />
+                <item name="microservices" type="2d1252cf:ModuleNode" />
+                <item name="customer-service" type="2d1252cf:ModuleNode" />
+                <item name="customer-service-main" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="istad-ite-project" type="f1a62948:ProjectNode" />
+                <item name="microservices" type="2d1252cf:ModuleNode" />
+                <item name="customer-service" type="2d1252cf:ModuleNode" />
+                <item name="customer-service-main" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="compileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="istad-ite-project" type="f1a62948:ProjectNode" />
+                <item name="microservices" type="2d1252cf:ModuleNode" />
+                <item name="customer-service" type="2d1252cf:ModuleNode" />
+                <item name="customer-service-main" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="runtimeClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
               </path>
             </expand>
             <select />
@@ -46,71 +106,78 @@
         <option value="Enum" />
         <option value="Record" />
         <option value="Interface" />
+        <option value="Exception" />
         <option value="Class" />
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HttpClientOnboardingState">{
+  &quot;isOnboardingCommentShown&quot;: true
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0" />
-      <entry key="S30" value="1.0" />
-      <entry key="S60" value="1.0000000000011062" />
-      <entry key="M2" value="1.0000035655468467" />
-      <entry key="M5" value="1.0313650757815123" />
-      <entry key="M10" value="1.6744027977400902" />
-      <entry key="M15" value="3.0531245104375024" />
-      <entry key="M30" value="11.292518058371888" />
-      <entry key="H1" value="41.027478967418325" />
-      <entry key="H2" value="98.57509211798609" />
-      <entry key="H4" value="164.39731889741094" />
-      <entry key="D1" value="264.0154781677213" />
-      <entry key="W1" value="287.7896977827936" />
+      <entry key="MS100" value="1.0000000000000977" />
+      <entry key="MS500" value="1.002499750823886" />
+      <entry key="S2" value="1.2255884904692895" />
+      <entry key="S5" value="1.632317659744881" />
+      <entry key="S10" value="2.02930234194055" />
+      <entry key="S30" value="2.5654812171344386" />
+      <entry key="S60" value="2.764018003827677" />
+      <entry key="M2" value="2.8768825572408607" />
+      <entry key="M5" value="3.0452876243511504" />
+      <entry key="M10" value="4.980438623662155" />
+      <entry key="M15" value="9.126862091673603" />
+      <entry key="M30" value="26.123941573257156" />
+      <entry key="H1" value="59.6948237084191" />
+      <entry key="H2" value="123.01082668538913" />
+      <entry key="H4" value="279.55054870018427" />
+      <entry key="D1" value="1201.6903771159266" />
+      <entry key="W1" value="1759.14705511455" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
       <entry key="MS500" value="0.0" />
       <entry key="S2" value="0.0" />
-      <entry key="S5" value="4.1657855205782625E-152" />
-      <entry key="S10" value="5.4809135002958955E-76" />
-      <entry key="S30" value="3.9552719776040815E-25" />
-      <entry key="S60" value="2.238363688334153E-12" />
-      <entry key="M2" value="5.814039392384975E-6" />
-      <entry key="M5" value="0.04633292988021901" />
-      <entry key="M10" value="1.003038816453067" />
-      <entry key="M15" value="3.1041792105700052" />
-      <entry key="M30" value="14.292894920260128" />
-      <entry key="H1" value="47.814362106276484" />
-      <entry key="H2" value="105.92246080532955" />
-      <entry key="H4" value="167.89613194685506" />
-      <entry key="D1" value="256.7616532601008" />
-      <entry key="W1" value="277.3698051979599" />
+      <entry key="S5" value="5.268022031453732E-141" />
+      <entry key="S10" value="7.258114101785485E-71" />
+      <entry key="S30" value="4.171331377285857E-24" />
+      <entry key="S60" value="2.0438768580443858E-12" />
+      <entry key="M2" value="1.5105132077242548E-6" />
+      <entry key="M5" value="0.010463834402091162" />
+      <entry key="M10" value="0.3820078814199602" />
+      <entry key="M15" value="1.4266511838132845" />
+      <entry key="M30" value="6.450346265559443" />
+      <entry key="H1" value="19.645129327082703" />
+      <entry key="H2" value="55.54627450885618" />
+      <entry key="H4" value="154.98997401089258" />
+      <entry key="D1" value="853.1184355996022" />
+      <entry key="W1" value="1324.8362134837057" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.8408964152537145" />
-      <entry key="MS500" value="0.9659363289248456" />
-      <entry key="S2" value="0.9913730874626621" />
-      <entry key="S5" value="0.9965402628278678" />
-      <entry key="S10" value="0.9982686325973925" />
-      <entry key="S30" value="0.9994225441413808" />
-      <entry key="S60" value="0.9997112303800406" />
-      <entry key="M2" value="0.9998649157230383" />
-      <entry key="M5" value="1.077409364469835" />
-      <entry key="M10" value="2.6749112456662" />
-      <entry key="M15" value="6.152096014447571" />
-      <entry key="M30" value="25.573041675794535" />
-      <entry key="H1" value="88.8209681736987" />
-      <entry key="H2" value="204.47451459572545" />
-      <entry key="H4" value="332.2751566159343" />
-      <entry key="D1" value="520.772432668633" />
-      <entry key="W1" value="565.1587763248856" />
+      <entry key="MS100" value="0.8585654364378404" />
+      <entry key="MS500" value="0.9724034382915575" />
+      <entry key="S2" value="1.2166628746463808" />
+      <entry key="S5" value="1.6277036728899752" />
+      <entry key="S10" value="2.026426792749954" />
+      <entry key="S30" value="2.5642514864480335" />
+      <entry key="S60" value="2.763351770735277" />
+      <entry key="M2" value="2.8765362116023545" />
+      <entry key="M5" value="3.0555019813961106" />
+      <entry key="M10" value="5.360805564958982" />
+      <entry key="M15" value="10.549776633529868" />
+      <entry key="M30" value="32.566436209977525" />
+      <entry key="H1" value="79.32844960331568" />
+      <entry key="H2" value="178.54050159767388" />
+      <entry key="H4" value="434.51735167178475" />
+      <entry key="D1" value="2054.789507847289" />
+      <entry key="W1" value="3083.979108035935" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -118,14 +185,33 @@
   &quot;fromUser&quot;: false
 }</component>
   <component name="ProjectId" id="3K5ZpNZFrbvMANH04bAup7ta2jv" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Docker.consul/docker-compose.yaml.consul-server: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.consul/docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.mongodb/docker-compose.yaml.mongodb: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.mongodb/docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.postgres/docker-compose.yaml.ite-postgres: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.postgres/docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.spring-auth-server: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.vault/docker-compose.yaml.vault: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.vault/docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Build gateway-server.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Build istad-ite-project.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.BusinessTest (1).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.BusinessTest.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.istad-ite-project [:microservices:business-service:kh.edu.istad.platform.business.BusinessApplicationService.main()].executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.generated-requests | #4.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.generated-requests | #5.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.generated-requests | #7.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.generated-requests | #8.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
@@ -133,13 +219,19 @@
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Spring Boot.AuthServerApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.BusinessApplicationService.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.CustomerApplicationService.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.GatewayServerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.IstadCommonWebfluxApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.OrderApplicationService.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.Spring Boot.executor&quot;: &quot;Run&quot;,
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;assignment__04&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/MicroserviceProject/istad-ite-project/microservices/customer-service/customer-service-main/src/main/resources&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/MicroserviceProject/istad-ite-project/microservices/gateway-server&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -150,20 +242,34 @@
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.32528734&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\MicroserviceProject\istad-ite-project\microservices\customer-service\customer-service-main\src\main\resources" />
-      <recent name="D:\MicroserviceProject\istad-ite-project\microservices\customer-service\src\main\resources" />
-      <recent name="D:\MicroserviceProject\istad-ite-project\microservices\customer-service" />
+      <recent name="D:\MicroserviceProject\istad-ite-project\microservices\gateway-server" />
+      <recent name="D:\MicroserviceProject\istad-ite-project\microservices" />
+      <recent name="D:\MicroserviceProject\istad-ite-project\istad-common\istad-common-webflux\src\main\resources" />
+      <recent name="D:\MicroserviceProject\istad-ite-project\microservices\order-service\order-service-main\src\main\resources\db.changelog\ddl" />
+      <recent name="D:\MicroserviceProject\istad-ite-project\deployment\vault" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="kh.edu.istad.platform.order" />
     </key>
   </component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
         <option value="SpringBootApplicationConfigurationType" />
       </set>
     </option>
@@ -172,38 +278,43 @@
         <entry key="SpringBootApplicationConfigurationType">
           <value>
             <map>
+              <entry key="AuthServerApplication" value="STOPPED" />
+              <entry key="BusinessApplicationService" value="STOPPED" />
               <entry key="CustomerApplicationService" value="STOPPED" />
-              <entry key="Spring Boot" value="FAILED" />
+              <entry key="GatewayServerApplication" value="STOPPED" />
+              <entry key="IstadCommonWebfluxApplication" value="STOPPED" />
+              <entry key="OrderApplicationService" value="STOPPED" />
             </map>
           </value>
         </entry>
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.CustomerApplicationService">
-    <configuration name="BusinessApplicationService" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="kh.edu.istad.platform.business.BusinessApplicationService" />
-      <module name="istad-ite-project.microservices.business-service.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="kh.edu.istad.platform.business.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Docker.spring-auth-server: Compose Deployment">
     <configuration default="true" type="JetRunConfigurationType">
-      <module name="istad-common" />
+      <module name="microservices.customer-service.customer-service-message" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="istad-common" />
+      <module name="microservices.customer-service.customer-service-message" />
       <option name="filePath" />
       <method v="2" />
+    </configuration>
+    <configuration name="AuthServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="microservices.spring-auth-server.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="kh.edu.istad.platform.authserver.AuthServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BusinessApplicationService" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="microservices.business-service.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="kh.edu.istad.platform.business.BusinessApplicationService" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="CustomerApplicationService" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="microservices.customer-service.customer-service-main.main" />
@@ -228,28 +339,111 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Spring Boot" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <option name="ALTERNATIVE_JRE_PATH" value="C:/Program Files/Java/jdk-25" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <module name="microservices.business-service.main" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="kh.edu.istad.platform.business.BusinessApplicationService" />
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
+    <configuration name="GRPCServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="microservices.grpc-server.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="kh.edu.istad.grpc.GRPCServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GatewayServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="microservices.gateway-server.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="kh.edu.istad.platform.gateway.GatewayServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IstadCommonWebfluxApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="istad-common.istad-common-webflux.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="kh.edu.istad.common.webflux.IstadCommonWebfluxApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderApplicationService" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="microservices.order-service.order-service-main.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="kh.edu.istad.platform.order.OrderApplicationService" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="kh.edu.istad.platform.order.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
       </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="PaymentClientService" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="microservices.grpc-server.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="kh.edu.istad.grpc.client.PaymentClientService" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="consul/docker-compose.yaml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="deployment/consul/docker-compose.yaml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="consul/docker-compose.yaml.consul-server: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="services">
+            <list>
+              <option value="consul-server" />
+            </list>
+          </option>
+          <option name="sourceFilePath" value="deployment/consul/docker-compose.yaml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="mongodb/docker-compose.yaml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="deployment/mongodb/docker-compose.yaml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="spring-auth-server: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="microservices/spring-auth-server/docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Docker.spring-auth-server: Compose Deployment" />
+      <item itemvalue="Docker.consul/docker-compose.yaml.consul-server: Compose Deployment" />
+      <item itemvalue="Docker.consul/docker-compose.yaml: Compose Deployment" />
+      <item itemvalue="Docker.mongodb/docker-compose.yaml: Compose Deployment" />
+      <item itemvalue="Spring Boot.BusinessApplicationService" />
+      <item itemvalue="Spring Boot.AuthServerApplication" />
+      <item itemvalue="Spring Boot.CustomerApplicationService" />
+      <item itemvalue="Spring Boot.GatewayServerApplication" />
+      <item itemvalue="Spring Boot.GRPCServerApplication" />
+      <item itemvalue="Spring Boot.IstadCommonWebfluxApplication" />
+      <item itemvalue="Spring Boot.PaymentClientService" />
+      <item itemvalue="Spring Boot.OrderApplicationService" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.BusinessApplicationService" />
+        <item itemvalue="Spring Boot.OrderApplicationService" />
+        <item itemvalue="Docker.spring-auth-server: Compose Deployment" />
+        <item itemvalue="Docker.consul/docker-compose.yaml: Compose Deployment" />
+        <item itemvalue="Docker.consul/docker-compose.yaml.consul-server: Compose Deployment" />
+        <item itemvalue="Docker.mongodb/docker-compose.yaml: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>
@@ -280,7 +474,39 @@
       <workItem from="1791357401716" duration="4814000" />
       <workItem from="1791442204671" duration="13937000" />
       <workItem from="1791458277041" duration="8056000" />
-      <workItem from="1791470793899" duration="2455000" />
+      <workItem from="1791470793899" duration="2993000" />
+      <workItem from="1791527374133" duration="9702000" />
+      <workItem from="1791553679607" duration="2761000" />
+      <workItem from="1791647225994" duration="2258000" />
+      <workItem from="1791712459120" duration="4234000" />
+      <workItem from="1791791510980" duration="1197000" />
+      <workItem from="1791814725325" duration="658000" />
+      <workItem from="1792390269396" duration="928000" />
+      <workItem from="1792423438521" duration="6987000" />
+      <workItem from="1792459160925" duration="3512000" />
+      <workItem from="1792474422430" duration="13119000" />
+      <workItem from="1792562670672" duration="5067000" />
+      <workItem from="1792591192598" duration="600000" />
+      <workItem from="1792657510101" duration="7554000" />
+      <workItem from="1792667059254" duration="35000" />
+      <workItem from="1792679424824" duration="1720000" />
+      <workItem from="1792754376044" duration="1943000" />
+      <workItem from="1792775042449" duration="228000" />
+      <workItem from="1792821046993" duration="2280000" />
+      <workItem from="1792827425848" duration="97000" />
+      <workItem from="1792997582886" duration="16090000" />
+      <workItem from="1793084869568" duration="14192000" />
+      <workItem from="1793105155986" duration="1326000" />
+      <workItem from="1793168009802" duration="15545000" />
+      <workItem from="1793247339236" duration="7853000" />
+      <workItem from="1793339415618" duration="2440000" />
+      <workItem from="1793348874378" duration="7695000" />
+      <workItem from="1793361615874" duration="2723000" />
+      <workItem from="1793599974897" duration="17145000" />
+      <workItem from="1793621274139" duration="4690000" />
+      <workItem from="1793629882301" duration="8798000" />
+      <workItem from="1793685017762" duration="25570000" />
+      <workItem from="1793716906532" duration="1612000" />
     </task>
     <servers />
   </component>

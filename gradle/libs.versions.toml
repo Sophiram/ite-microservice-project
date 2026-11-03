@@ -1,0 +1,47 @@
+[versions]
+java-language-version = "25"
+spring-boot-gradle-plugin = "4.1.1"
+dependency-management-plugin = "1.1.7"
+springdoc-openapi-starter-webmvc-ui = "3.2.0"
+istad-version = "1.0.0"
+
+[libraries]
+spring-boot-gradle-plugin = {module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "spring-boot-gradle-plugin"}
+dependency-management-plugin = {module = "io.spring.gradle:dependency-management-plugin", version.ref = "dependency-management-plugin"}
+
+spring-boot-starter-data-r2dbc = {module = "org.springframework.boot:spring-boot-starter-data-r2dbc"}
+springdoc-openapi-starter-webmvc-ui = {module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc-openapi-starter-webmvc-ui"}
+
+spring-boot-starter-webclient = { module = "org.springframework.boot:spring-boot-starter-webclient"}
+spring-boot-starter-webflux = {module = "org.springframework.boot:spring-boot-starter-webflux"}
+spring-boot-starter-web = {module = "org.springframework.boot:spring-boot-starter-web"}
+
+istad-common-swagger = {module = "kh.edu.istad:istad-common-swagger", version.ref = "istad-version"}
+istad-common-domain = { module = "kh.edu.istad:istad-common-domain", version.ref = "istad-version"}
+istad-common-webflux = { module = "kh.edu.istad:istad-common-webflux", version.ref = "istad-version"}
+reactor-core = { module = "io.projectreactor:reactor-core"}
+
+# ORDER-SERVICE
+order-application-service = {module = "kh.edu.istad:order-application-service", version.ref = "istad-version"}
+order-domain-core = {module = "kh.edu.istad:order-domain-core", version.ref = "istad-version"}
+order-service-client = {module = "kh.edu.istad:order-service-client", version.ref = "istad-version"}
+order-service-persistence = {module = "kh.edu.istad:order-service-persistence", version.ref = "istad-version"}
+
+# CUSTOMER-SERVICE
+customer-domain-core = {module = "kh.edu.istad:customer-domain-core", version.ref = "istad-version"}
+customer-application-service = {module = "kh.edu.istad:customer-application-service", version.ref = "istad-version"}
+customer-service-message = {module = "kh.edu.istad:customer-service-message", version.ref = "istad-version"}
+customer-service-restapi = {module = "kh.edu.istad:customer-service-restapi", version.ref = "istad-version"}
+customer-service-persistence = {module = "kh.edu.istad:customer-service-persistence", version.ref = "istad-version"}
+
+[bundles]
+gradle-dependency-management = [
+    "spring-boot-gradle-plugin",
+    "dependency-management-plugin"
+]
+
+[plugins]
+spring-boot-common-conventions = {id = "spring-boot-common-conventions"}
+spring-cloud-common-conventions = {id = "spring-cloud-common-conventions"}
+java-common-conventions = {id = "java-common-conventions"}
+spring-common-conventions = {id = "spring-common-conventions"}

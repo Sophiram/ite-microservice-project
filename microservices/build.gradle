@@ -18,3 +18,9 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+tasks.named('build') {
+    gradle.includedBuilds.each { included ->
+        dependsOn included.task(':build')
+    }
+}

@@ -1,0 +1,18 @@
+plugins {
+    id 'spring-boot-common-conventions'
+}
+
+group = 'kh.edu.istad'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation libs.springdoc.openapi.starter.webmvc.ui
+}
+
+bootJar {
+    enabled = false
+}

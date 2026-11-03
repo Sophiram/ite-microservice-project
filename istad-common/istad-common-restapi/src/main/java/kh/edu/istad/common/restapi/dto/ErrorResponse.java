@@ -1,4 +1,4 @@
-package kh.edu.istad.platform.customer.restapi.exception;
+package kh.edu.istad.common.restapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

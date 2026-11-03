@@ -2,11 +2,22 @@ plugins {
     id 'java'
 }
 
-group = 'kh.edu.istad.common'
+group = 'kh.edu.istad'
 version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+}
+
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.dependencySubstitution {
+            substitute module('kh.edu.istad:istad-common-domain') using project(':istad-common-domain')
+            substitute module('kh.edu.istad:istad-common-restapi') using project(':istad-common-restapi')
+            substitute module('kh.edu.istad:istad-common-swagger') using project(':istad-common-swagger')
+            substitute module('kh.edu.istad:istad-common-webflux') using project(':istad-common-webflux')
+        }
+    }
 }
 
 dependencies {

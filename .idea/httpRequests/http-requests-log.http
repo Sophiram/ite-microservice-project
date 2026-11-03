@@ -1,0 +1,77 @@
+GET http://localhost:9091/api/customers/statistic
+
+<> 2026-10-20T135131.200.json
+
+###
+GET http://localhost:9091/api/customers/statistic
+
+<> 2026-10-20T135100.200.json
+
+###
+GET http://localhost:9091/api/customers
+Content-Type: application/json
+
+{
+  "username": "",
+  "familyName": "",
+  "givenName": "",
+  "email": "",
+  "phoneNumber": ""
+}
+
+<> 2026-10-20T134009.200.json
+
+###
+GET http://localhost:9091/api/customers
+Content-Type: application/json
+
+{
+  "username": "",
+  "familyName": "",
+  "givenName": "",
+  "email": "",
+  "phoneNumber": ""
+}
+
+<> 2026-10-20T131907.500.json
+
+###
+GET http://localhost:9091/api/customers
+Content-Type: application/json
+
+{
+  "username": "",
+  "familyName": "",
+  "givenName": "",
+  "email": "",
+  "phoneNumber": ""
+}
+
+<> 2026-10-20T131742.500.json
+
+###
+GET http://localhost:9091/api/customers/filter?familyName=Sorn&givenName=Sophiramjr
+
+<> 2026-10-19T201429.200.json
+
+###
+GET http://localhost:9091/api/customers/filter?familyName=Sorn&givenName=Sophiramjr
+
+<> 2026-10-19T201401.200.json
+
+###
+GET http://localhost:9091/api/customers/filter?familyName=Sorn
+
+<> 2026-10-19T201230.200.json
+
+###
+GET http://localhost:9091/api/customers/filter?familyName=Smith&phoneNumber=012
+
+<> 2026-10-19T201208.200.json
+
+###
+GET http://localhost:9091/api/customers
+
+<> 2026-10-19T161034.500.json
+
+###

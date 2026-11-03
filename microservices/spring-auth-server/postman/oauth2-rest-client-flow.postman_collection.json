@@ -1,0 +1,340 @@
+{
+  "info": {
+    "name": "OAuth2 REST Client Flow (Auth Server + Customer + Order)",
+    "description": "Postman collection to test the end-to-end OAuth2 client_credentials flow between Spring Authorization Server (port 9000), customer-service (port 9091), and order-service (port 8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:9000",
+      "type": "string"
+    },
+    {
+      "key": "customer_service_url",
+      "value": "http://localhost:9091",
+      "type": "string"
+    },
+    {
+      "key": "order_service_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "order_client_id",
+      "value": "order-service",
+      "type": "string"
+    },
+    {
+      "key": "order_client_secret",
+      "value": "order-secret",
+      "type": "string"
+    },
+    {
+      "key": "order_access_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Get Token for order-service (client_credentials)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test(\"Returns valid Bearer access token\", () => {",
+              "  pm.expect(json.token_type).to.eql(\"Bearer\");",
+              "  pm.expect(json.access_token).to.be.a(\"string\");",
+              "  pm.expect(json.expires_in).to.be.above(0);",
+              "  pm.expect(json.scope).to.include(\"customer.read\");",
+              "});",
+              "pm.environment.set(\"order_access_token\", json.access_token);",
+              "pm.collectionVariables.set(\"order_access_token\", json.access_token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{order_client_id}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{order_client_secret}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "grant_type",
+              "value": "client_credentials",
+              "type": "text"
+            },
+            {
+              "key": "scope",
+              "value": "customer.read business.read",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/oauth2/token",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "oauth2",
+            "token"
+          ]
+        },
+        "description": "Obtain an OAuth2 Bearer token for client 'order-service' using the client_credentials grant type and scopes 'customer.read business.read'."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Direct Call Customer Service WITH Token (Expect 200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Response is an array of customers\", () => {",
+              "  const data = pm.response.json();",
+              "  pm.expect(data).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{order_access_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{customer_service_url}}/api/customers",
+          "host": [
+            "{{customer_service_url}}"
+          ],
+          "path": [
+            "api",
+            "customers"
+          ]
+        },
+        "description": "Direct call to customer-service /api/customers with Bearer JWT obtained from Step 1."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Direct Call Customer Service WITHOUT Token (Expect 401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 401 Unauthorized\", () => pm.response.to.have.status(401));",
+              "const json = pm.response.json();",
+              "pm.test(\"Returns structured JSON 401\", () => {",
+              "  pm.expect(json.status).to.eql(401);",
+              "  pm.expect(json.title).to.eql(\"Unauthorized\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": {
+          "raw": "{{customer_service_url}}/api/customers",
+          "host": [
+            "{{customer_service_url}}"
+          ],
+          "path": [
+            "api",
+            "customers"
+          ]
+        },
+        "description": "Calling customer-service /api/customers without any token. Must return 401 Unauthorized as JSON."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Direct Call Customer Service with Wrong Scope (Expect 403)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 403 Forbidden\", () => pm.response.to.have.status(403));",
+              "const json = pm.response.json();",
+              "pm.test(\"Returns structured JSON 403\", () => {",
+              "  pm.expect(json.status).to.eql(403);",
+              "  pm.expect(json.title).to.eql(\"Forbidden\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{cc_access_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{customer_service_url}}/api/customers",
+          "host": [
+            "{{customer_service_url}}"
+          ],
+          "path": [
+            "api",
+            "customers"
+          ]
+        },
+        "description": "Calling customer-service with a token that lacks 'customer.read' (e.g. service-client token which only has 'api.read'). Must return 403 Forbidden as JSON."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Order Service calls Customer Service via OAuth2 WebClient (Expect 200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Response is an array of customers\", () => {",
+              "  const data = pm.response.json();",
+              "  pm.expect(data).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": {
+          "raw": "{{order_service_url}}/customers",
+          "host": [
+            "{{order_service_url}}"
+          ],
+          "path": [
+            "customers"
+          ]
+        },
+        "description": "Calls order-service at /customers. Order Service uses its reactive OAuth2-configured WebClient to automatically fetch a token from Spring Authorization Server and attach 'Authorization: Bearer <token>' when calling customer-service."
+      },
+      "response": []
+    },
+    {
+      "name": "6. Customer Service Health Check (Public, Expect 200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test(\"Status is UP\", () => {",
+              "  pm.expect(json.status).to.eql(\"UP\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": {
+          "raw": "{{customer_service_url}}/actuator/health",
+          "host": [
+            "{{customer_service_url}}"
+          ],
+          "path": [
+            "actuator",
+            "health"
+          ]
+        },
+        "description": "Actuator health check endpoint on customer-service is publicly accessible without authentication."
+      },
+      "response": []
+    }
+  ]
+}

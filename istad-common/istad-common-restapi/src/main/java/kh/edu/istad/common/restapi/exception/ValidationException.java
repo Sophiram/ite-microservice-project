@@ -1,4 +1,4 @@
-package kh.edu.istad.platform.customer.restapi.exception;
+package kh.edu.istad.common.restapi.exception;
 
 import lombok.Getter;
 

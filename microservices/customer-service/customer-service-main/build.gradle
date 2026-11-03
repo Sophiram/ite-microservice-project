@@ -1,15 +1,25 @@
 plugins {
-    id 'spring-boot-common-conventions'
+    alias(libs.plugins.spring.boot.common.conventions)
+    alias(libs.plugins.spring.cloud.common.conventions)
 }
 
 dependencies {
-    implementation 'kh.edu.istad:customer-domain-core'
-    implementation 'kh.edu.istad:customer-application-service'
-    implementation 'kh.edu.istad:customer-service-message'
-    implementation 'kh.edu.istad:customer-service-restapi'
-    implementation 'kh.edu.istad:customer-service-persistence'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation libs.istad.common.swagger
+    implementation(libs.customer.domain.core)
+    implementation(libs.customer.application.service)
+    implementation(libs.customer.service.message)
+    implementation(libs.customer.service.restapi)
+    implementation(libs.customer.service.persistence)
+    implementation(libs.spring.boot.starter.webflux)
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // OAuth2 resource server auto-config (JWT decoder bean, Spring Security filter chain)
+    // The security config class lives in customer-service-restapi which already
+    // declares this dep; we add it here too so the boot auto-configuration kicks in.
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 }

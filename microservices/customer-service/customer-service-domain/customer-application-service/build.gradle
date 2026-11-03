@@ -1,9 +1,13 @@
 plugins {
-    id 'spring-common-conventions'
+//    id 'spring-common-conventions'
+    alias(libs.plugins.spring.common.conventions)
 }
 
 dependencies {
-    api 'kh.edu.istad:customer-domain-core'
+//    api 'kh.edu.istad:customer-domain-core'
+    api libs.customer.domain.core
+    implementation(libs.reactor.core)
+//    implementation 'io.projectreactor:reactor-core'
 
 
 }
