@@ -1,0 +1,8 @@
+plugins {
+    alias(libs.plugins.spring.common.conventions)
+}
+
+dependencies {
+    api(libs.product.application.service)
+    implementation(libs.spring.boot.starter.web)
+}

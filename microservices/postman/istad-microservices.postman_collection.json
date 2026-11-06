@@ -1,0 +1,1142 @@
+{
+  "info": {
+    "_postman_id": "a902b662-723b-4881-bf96-7c6d67e8109a",
+    "name": "ISTAD Microservices Test Suite",
+    "description": "Comprehensive automated test suite for ISTAD Microservices platform covering Auth, Customer Service, Product Service, Order Service, API Gateway, and Payment Service.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. OAuth2 Auth Server",
+      "item": [
+        {
+          "name": "1.1 Get Token (Client Credentials - order-service)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Access token returned\", function () {",
+                  "    pm.expect(jsonData.access_token).to.be.a('string');",
+                  "    pm.expect(jsonData.token_type).to.eql('Bearer');",
+                  "    pm.expect(jsonData.scope).to.include('customer.read');",
+                  "});",
+                  "",
+                  "pm.environment.set(\"access_token\", jsonData.access_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{order_client_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "{{order_client_secret}}",
+                  "type": "text"
+                },
+                {
+                  "key": "scope",
+                  "value": "customer.read business.read",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{auth_url}}/oauth2/token",
+              "host": [
+                "{{auth_url}}"
+              ],
+              "path": [
+                "oauth2",
+                "token"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.2 Get OpenID Configuration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Discovery document contains endpoints\", function () {",
+                  "    pm.expect(data.issuer).to.be.a('string');",
+                  "    pm.expect(data.token_endpoint).to.be.a('string');",
+                  "    pm.expect(data.jwks_uri).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{auth_url}}/.well-known/openid-configuration",
+              "host": [
+                "{{auth_url}}"
+              ],
+              "path": [
+                ".well-known",
+                "openid-configuration"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.3 Get JWKS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Keys array present\", function () {",
+                  "    pm.expect(data.keys).to.be.an('array');",
+                  "    pm.expect(data.keys.length).to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{auth_url}}/oauth2/jwks",
+              "host": [
+                "{{auth_url}}"
+              ],
+              "path": [
+                "oauth2",
+                "jwks"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Customer Service",
+      "item": [
+        {
+          "name": "2.1 Initiate Customer",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var rand = Math.floor(Math.random() * 100000);",
+                  "pm.variables.set(\"genUsername\", \"user_\" + rand);",
+                  "pm.variables.set(\"genEmail\", \"user_\" + rand + \"@example.com\");"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Customer initiated with UUID\", function () {",
+                  "    pm.expect(data.customerId).to.be.a('string');",
+                  "    pm.expect(data.username).to.eql(pm.variables.get(\"genUsername\"));",
+                  "});",
+                  "pm.environment.set(\"customerId\", data.customerId);",
+                  "pm.environment.set(\"customerUsername\", data.username);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{genUsername}}\",\n  \"familyName\": \"Sok\",\n  \"givenName\": \"Dara\",\n  \"email\": \"{{genEmail}}\",\n  \"phoneNumber\": \"012345678\"\n}"
+            },
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.2 Get Customer By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Customer details match\", function () {",
+                  "    pm.expect(data.customerId).to.eql(pm.environment.get(\"customerId\"));",
+                  "    pm.expect(data.username).to.eql(pm.environment.get(\"customerUsername\"));",
+                  "    pm.expect(data.status).to.eql(\"ACTIVE\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers/{{customerId}}",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "{{customerId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.3 Search Customer By Username",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Found customer by username\", function () {",
+                  "    pm.expect(data.username).to.eql(pm.environment.get(\"customerUsername\"));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers/search?username={{customerUsername}}",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "{{customerUsername}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.4 Update Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Customer updated successfully\", function () {",
+                  "    pm.expect(data.familyName).to.eql(\"Sok Updated\");",
+                  "    pm.expect(data.givenName).to.eql(\"Dara Updated\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"familyName\": \"Sok Updated\",\n  \"givenName\": \"Dara Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers/{{customerId}}",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "{{customerId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.5 Upgrade Customer Segment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Segment upgraded to GOLD\", function () {",
+                  "    pm.expect(data.segment).to.eql(\"GOLD\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"segment\": \"GOLD\"\n}"
+            },
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers/{{customerId}}/segment",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "{{customerId}}",
+                "segment"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.6 Deactivate Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Status is INACTIVE\", function () {",
+                  "    pm.expect(data.status).to.eql(\"INACTIVE\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers/{{customerId}}/deactivate",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "{{customerId}}",
+                "deactivate"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.7 Activate Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Status restored to ACTIVE\", function () {",
+                  "    pm.expect(data.status).to.eql(\"ACTIVE\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers/{{customerId}}/activate",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "{{customerId}}",
+                "activate"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.8 Filter Customers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Returns an array of customers\", function () {",
+                  "    pm.expect(data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers/filter?status=ACTIVE&segment=GOLD",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "filter"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                },
+                {
+                  "key": "segment",
+                  "value": "GOLD"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.9 Customer Statistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Statistics returned\", function () {",
+                  "    pm.expect(data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers/statistic",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "statistic"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.10 Negative Test: Unauthorized (No Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401 Unauthorized\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Error body contains 401 detail\", function () {",
+                  "    pm.expect(data.status).to.eql(401);",
+                  "    pm.expect(data.title).to.eql(\"Unauthorized\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.11 Delete Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204 No Content\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{customer_service_url}}/api/customers/{{customerId}}",
+              "host": [
+                "{{customer_service_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "{{customerId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Product Service (REST API)",
+      "item": [
+        {
+          "name": "3.1 Create Product",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var skuNum = Math.floor(Math.random() * 10000);",
+                  "pm.variables.set(\"genSku\", \"SKU-PM-\" + skuNum);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Product created with id\", function () {",
+                  "    pm.expect(data.id).to.be.a('string');",
+                  "    pm.expect(data.sku).to.eql(pm.variables.get(\"genSku\"));",
+                  "    pm.expect(data.status).to.eql(\"ACTIVE\");",
+                  "});",
+                  "pm.environment.set(\"productId\", data.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessId\": \"{{businessId}}\",\n  \"sku\": \"{{genSku}}\",\n  \"name\": \"Postman Test Mechanical Keyboard\",\n  \"description\": \"RGB Backlit TKL Gaming Keyboard\",\n  \"unitPrice\": 49.99,\n  \"currency\": \"USD\",\n  \"availableQuantity\": 25\n}"
+            },
+            "url": {
+              "raw": "{{product_service_url}}/api/products",
+              "host": [
+                "{{product_service_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.2 Get Product By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Product ID matches\", function () {",
+                  "    pm.expect(data.id).to.eql(pm.environment.get(\"productId\"));",
+                  "    pm.expect(data.availableQuantity).to.eql(25);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{product_service_url}}/api/products/{{productId}}",
+              "host": [
+                "{{product_service_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.3 Update Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Product updated\", function () {",
+                  "    pm.expect(data.name).to.eql(\"Postman Test Mechanical Keyboard V2\");",
+                  "    pm.expect(data.availableQuantity).to.eql(30);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"SKU-PM-UPDATED\",\n  \"name\": \"Postman Test Mechanical Keyboard V2\",\n  \"description\": \"Upgraded switches\",\n  \"unitPrice\": 59.99,\n  \"currency\": \"USD\",\n  \"availableQuantity\": 30,\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{product_service_url}}/api/products/{{productId}}",
+              "host": [
+                "{{product_service_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.4 Get All Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Returns products list\", function () {",
+                  "    pm.expect(data).to.be.an('array');",
+                  "    pm.expect(data.length).to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{product_service_url}}/api/products",
+              "host": [
+                "{{product_service_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Order Service & Gateway Server",
+      "item": [
+        {
+          "name": "4.1 Order Service - Consul Config",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{order_service_url}}/consul/config",
+              "host": [
+                "{{order_service_url}}"
+              ],
+              "path": [
+                "consul",
+                "config"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.2 Order Service - Customer Integration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Customer array returned via Order Service Client\", function () {",
+                  "    pm.expect(data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{order_service_url}}/customers",
+              "host": [
+                "{{order_service_url}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.3 Gateway Server - Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Gateway status is UP\", function () {",
+                  "    pm.expect(data.status).to.eql(\"UP\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/actuator/health",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.4 Gateway Server - View Routes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/actuator/gateway/routes",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "actuator",
+                "gateway",
+                "routes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.5 Gateway Server - Route to Order Service (/my-order/customers)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/my-order/customers",
+              "host": [
+                "{{gateway_url}}"
+              ],
+              "path": [
+                "my-order",
+                "customers"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Payment Service (REST Bridge)",
+      "item": [
+        {
+          "name": "5.1 Process Payment - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Payment succeeded\", function () {",
+                  "    pm.expect(data.success).to.be.true;",
+                  "    pm.expect(data.transactionId).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{payment_service_url}}/api/payments/process?orderId=ORD-1001&amountCents=2500",
+              "host": [
+                "{{payment_service_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "process"
+              ],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "ORD-1001"
+                },
+                {
+                  "key": "amountCents",
+                  "value": "2500"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.2 Process Payment - Invalid Amount (Zero)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 (Business rejection)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test(\"Payment rejected for non-positive amount\", function () {",
+                  "    pm.expect(data.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{payment_service_url}}/api/payments/process?orderId=ORD-1002&amountCents=0",
+              "host": [
+                "{{payment_service_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "process"
+              ],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "ORD-1002"
+                },
+                {
+                  "key": "amountCents",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

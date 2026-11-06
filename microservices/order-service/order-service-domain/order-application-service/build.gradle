@@ -8,4 +8,5 @@ dependencies {
 //    api 'kh.edu.istad:order-domain-core'
     api libs.reactor.core
     api libs.order.domain.core
+    api libs.istad.common.domain
 }

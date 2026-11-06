@@ -5,7 +5,12 @@ dependency-management-plugin = "1.1.7"
 springdoc-openapi-starter-webmvc-ui = "3.2.0"
 istad-version = "1.0.0"
 
+
+# gRPC
+grpc = "1.68.1"
+
 [libraries]
+
 spring-boot-gradle-plugin = {module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "spring-boot-gradle-plugin"}
 dependency-management-plugin = {module = "io.spring.gradle:dependency-management-plugin", version.ref = "dependency-management-plugin"}
 
@@ -33,6 +38,17 @@ customer-application-service = {module = "kh.edu.istad:customer-application-serv
 customer-service-message = {module = "kh.edu.istad:customer-service-message", version.ref = "istad-version"}
 customer-service-restapi = {module = "kh.edu.istad:customer-service-restapi", version.ref = "istad-version"}
 customer-service-persistence = {module = "kh.edu.istad:customer-service-persistence", version.ref = "istad-version"}
+
+# gRPC
+grpc-services = { module = "io.grpc:grpc-services", version.ref = "grpc" }
+istad-common-grpc = { module = "kh.edu.istad:istad-common-grpc", version.ref = "istad-version" }
+
+# PRODUCT-SERVICE
+product-domain-core = { module = "kh.edu.istad:product-domain-core", version.ref = "istad-version" }
+product-application-service = { module = "kh.edu.istad:product-application-service", version.ref = "istad-version" }
+product-service-persistence = { module = "kh.edu.istad:product-service-persistence", version.ref = "istad-version" }
+product-service-grpc = { module = "kh.edu.istad:product-service-grpc", version.ref = "istad-version" }
+product-service-restapi = { module = "kh.edu.istad:product-service-restapi", version.ref = "istad-version" }
 
 [bundles]
 gradle-dependency-management = [
