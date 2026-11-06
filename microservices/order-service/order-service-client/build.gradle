@@ -17,14 +17,19 @@ dependencies {
     implementation libs.reactor.core
     implementation libs.order.application.service
     implementation libs.spring.boot.starter.webclient
+    implementation libs.istad.common.grpc
+    implementation 'org.springframework.boot:spring-boot-starter-grpc-client'
 
     // OAuth2 client (ReactiveOAuth2AuthorizedClientManager, client_credentials grant)
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     // MockWebServer for the OAuth2 bearer-token integration test
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
     testImplementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    testImplementation 'io.grpc:grpc-inprocess'
 }
 
 bootJar {

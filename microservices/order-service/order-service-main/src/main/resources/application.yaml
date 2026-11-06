@@ -68,8 +68,11 @@ spring:
         base-url: lb://customer-service
       business-service:
         base-url: lb://business-service
-
-
+service:
+  product:
+    grpc:
+      address: ${PRODUCT_SERVICE_GRPC_ADDRESS:localhost:1013}
+      deadline: ${PRODUCT_SERVICE_GRPC_DEADLINE:3s}
 
 
 

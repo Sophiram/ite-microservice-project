@@ -1,0 +1,117 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-products
+      author: istad
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: business_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sku
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_price
+                  type: numeric(19,4)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: available_quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: products
+            columnNames: business_id, sku
+            constraintName: uq_products_business_sku
+        - createTable:
+            tableName: stock_reservations
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: stock_reservations
+            indexName: uq_stock_reservations_order_id
+            unique: true
+            columns:
+              - column:
+                  name: order_id
+        - createTable:
+            tableName: stock_reservation_items
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: reservation_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_reservation_items_reservation
+                    references: stock_reservations(id)
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_reservation_items_product
+                    references: products(id)
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: item_order
+                  type: int
+                  constraints:
+                    nullable: false

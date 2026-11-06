@@ -1,0 +1,11 @@
+plugins {
+    alias(libs.plugins.spring.common.conventions)
+}
+
+dependencies {
+    api(libs.product.domain.core)
+    implementation(libs.istad.common.domain)
+    implementation 'org.springframework:spring-tx'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}

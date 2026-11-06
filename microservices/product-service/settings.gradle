@@ -1,0 +1,26 @@
+pluginManagement {
+    includeBuild('../../build-logic')
+
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+    versionCatalogs {
+        libs {
+            from(files("../../gradle/libs.versions.toml"))
+        }
+    }
+}
+rootProject.name = 'product-service'
+includeBuild '../../istad-common'
+include 'product-service-main'
+include 'product-service-domain:product-domain-core'
+include 'product-service-domain:product-application-service'
+include 'product-service-persistence'
+include 'product-service-grpc'
+include 'product-service-restapi'

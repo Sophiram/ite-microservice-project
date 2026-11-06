@@ -1,0 +1,13 @@
+plugins {
+    alias(libs.plugins.spring.common.conventions)
+}
+
+dependencies {
+    api(libs.product.application.service)
+    implementation(libs.istad.common.grpc)
+    implementation 'org.springframework.boot:spring-boot-starter-grpc-server'
+    implementation(libs.grpc.services)
+    testImplementation 'io.grpc:grpc-inprocess'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}

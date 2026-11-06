@@ -1,0 +1,19 @@
+plugins {
+    id 'spring-boot-common-conventions'
+}
+
+bootJar {
+    enabled = false
+}
+
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.dependencySubstitution {
+            substitute module('kh.edu.istad:product-domain-core') using project(':product-service-domain:product-domain-core')
+            substitute module('kh.edu.istad:product-application-service') using project(':product-service-domain:product-application-service')
+            substitute module('kh.edu.istad:product-service-persistence') using project(':product-service-persistence')
+            substitute module('kh.edu.istad:product-service-grpc') using project(':product-service-grpc')
+            substitute module('kh.edu.istad:product-service-restapi') using project(':product-service-restapi')
+        }
+    }
+}
