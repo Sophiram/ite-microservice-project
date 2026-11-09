@@ -18,3 +18,4 @@ services:
       - ./init_db/:/docker-entrypoint-initdb.d
     networks:
       - ite-net
+    restart: always

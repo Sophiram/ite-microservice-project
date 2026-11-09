@@ -9,6 +9,11 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+        maven {
+            name = 'buf'
+            url = uri('https://buf.build/gen/maven')
+        }
+        mavenCentral()
     }
     versionCatalogs {
         libs {

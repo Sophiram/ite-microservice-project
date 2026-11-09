@@ -1,15 +1,12 @@
 package kh.edu.istad.platform.order.client.adapter;
 
+import build.buf.gen.istad.product.v1.*;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import kh.edu.istad.common.domain.valueobject.BusinessId;
 import kh.edu.istad.common.domain.valueobject.Money;
 import kh.edu.istad.common.domain.valueobject.OrderId;
 import kh.edu.istad.common.domain.valueobject.ProductId;
-import kh.edu.istad.common.grpc.product.v1.BatchGetProductsRequest;
-import kh.edu.istad.common.grpc.product.v1.ProductServiceGrpc;
-import kh.edu.istad.common.grpc.product.v1.ReleaseStockRequest;
-import kh.edu.istad.common.grpc.product.v1.ReserveStockRequest;
 import kh.edu.istad.platform.order.client.DownStreamServiceException;
 import kh.edu.istad.platform.order.domain.dto.ProductInfo;
 import kh.edu.istad.platform.order.domain.dto.StockReservationItem;
@@ -60,7 +57,7 @@ public class ProductServiceGrpcClientAdapter implements ProductServiceClient {
                     .setOrderId(orderId.value().toString())
                     .setBusinessId(businessId.value().toString());
             items.forEach(item -> request.addItems(
-                    kh.edu.istad.common.grpc.product.v1.StockItem.newBuilder()
+                    StockItem.newBuilder()
                             .setProductId(item.productId().value().toString())
                             .setQuantity(item.quantity())
                             .build()));
@@ -106,7 +103,7 @@ public class ProductServiceGrpcClientAdapter implements ProductServiceClient {
         };
     }
 
-    private static ProductInfo toDomain(kh.edu.istad.common.grpc.product.v1.Product product) {
+    private static ProductInfo toDomain(Product product) {
         return new ProductInfo(new ProductId(UUID.fromString(product.getId())),
                 new BusinessId(UUID.fromString(product.getBusinessId())), product.getSku(), product.getName(),
                 product.getDescription(), new Money(new BigDecimal(product.getUnitPrice().getAmount())),

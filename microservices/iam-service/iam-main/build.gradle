@@ -1,0 +1,30 @@
+plugins {
+    alias(libs.plugins.spring.boot.common.conventions)
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.security:spring-security-crypto'
+    implementation(libs.iam.domain.core)
+    implementation(libs.iam.application.service)
+    implementation(libs.iam.persistence)
+    implementation(libs.iam.infrastructure)
+    implementation(libs.iam.rest.api)
+    implementation(libs.iam.web)
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-jackson'
+    testImplementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'
+    testImplementation libs.testcontainers.postgresql
+    testImplementation libs.testcontainers.junit.jupiter
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.register('hashPassword', JavaExec) {
+    group = 'application'
+    description = 'Read a password from standard input and print its BCrypt hash.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'kh.edu.istad.iam.tools.PasswordHashCli'
+    standardInput = System.in
+}

@@ -1,0 +1,401 @@
+{
+  "info": {
+    "name": "IAM Service API and OAuth2/OIDC",
+    "description": "Register IAM users, authorize with OAuth 2.0 authorization code and PKCE, call secured APIs, and register OAuth clients dynamically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      { "key": "grant_type", "value": "authorization_code_with_pkce", "type": "string" },
+      { "key": "authUrl", "value": "{{baseUrl}}/oauth2/authorize", "type": "string" },
+      { "key": "accessTokenUrl", "value": "{{baseUrl}}/oauth2/token", "type": "string" },
+      { "key": "clientId", "value": "{{browser_client_id}}", "type": "string" },
+      { "key": "clientSecret", "value": "", "type": "string" },
+      { "key": "scope", "value": "openid profile email address phone", "type": "string" },
+      { "key": "callbackUrl", "value": "{{redirect_uri}}", "type": "string" },
+      { "key": "code_challenge_method", "value": "S256", "type": "string" },
+      { "key": "useBrowser", "value": false, "type": "boolean" },
+      { "key": "client_authentication", "value": "body", "type": "string" },
+      { "key": "addTokenTo", "value": "header", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:9000", "type": "string" },
+    { "key": "browser_client_id", "value": "iam-browser", "type": "string" },
+    { "key": "redirect_uri", "value": "https://oauth.pstmn.io/v1/callback", "type": "string" },
+    { "key": "dcr_client_id", "value": "iam-dcr", "type": "string" }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('Request succeeded', () => pm.expect(pm.response.code).to.be.within(200, 299));"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "01. Setup and registration",
+      "item": [
+        {
+          "name": "Register self-service user",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"{{new_username}}\",\"email\":\"{{new_email}}\",\"password\":\"{{new_password}}\",\"confirmPassword\":\"{{new_password}}\",\"givenName\":\"Postman\",\"familyName\":\"Tester\",\"locale\":\"en\"}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/auth/register",
+            "description": "Set new_password and unique username/email first. Public endpoint."
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('User registered', () => pm.response.to.have.status(201));", "pm.environment.set('user_uuid', pm.response.json().uuid);"] } }],
+          "response": []
+        },
+        {
+          "name": "Create test permission",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"resource\":\"{{permission_resource}}\",\"action\":\"{{permission_action}}\",\"description\":\"Postman test permission\"}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/permissions"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Permission created', () => pm.response.to.have.status(201));", "pm.environment.set('permission_uuid', pm.response.json().uuid);"] } }],
+          "response": []
+        },
+        {
+          "name": "Create disposable permission for deactivate check",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"resource\":\"{{disposable_permission_resource}}\",\"action\":\"{{disposable_permission_action}}\",\"description\":\"Disposable Postman deactivation test\"}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/permissions"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Disposable permission created', () => pm.response.to.have.status(201));", "pm.environment.set('deactivate_permission_uuid', pm.response.json().uuid);"] } }],
+          "response": []
+        },
+        {
+          "name": "Create test role",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"name\":\"{{role_name}}\",\"description\":\"Postman test role\",\"permissionUuids\":[]}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/roles"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Role created', () => pm.response.to.have.status(201));", "pm.environment.set('role_uuid', pm.response.json().uuid);"] } }],
+          "response": []
+        },
+        {
+          "name": "Create managed test user",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"{{managed_username}}\",\"email\":\"{{managed_email}}\",\"password\":\"{{new_password}}\",\"givenName\":\"Managed\",\"familyName\":\"Tester\",\"gender\":\"other\",\"birthdate\":\"1998-01-15\",\"phoneNumber\":\"+85512345678\",\"zoneinfo\":\"Asia/Phnom_Penh\",\"locale\":\"en\",\"address\":{\"streetAddress\":\"12 Test Street\",\"locality\":\"Phnom Penh\",\"region\":\"Phnom Penh\",\"postalCode\":\"12000\",\"country\":\"KH\"},\"roleUuids\":[]}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/users"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Managed user created', () => pm.response.to.have.status(201));", "pm.environment.set('managed_user_uuid', pm.response.json().uuid);"] } }],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02. User administration",
+      "item": [
+        {
+          "name": "List users",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/users?page=0&size=20&sort=username&direction=ASC" },
+          "response": []
+        },
+        {
+          "name": "Get managed user",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}" },
+          "response": []
+        },
+        {
+          "name": "Update managed user profile",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"givenName\":\"Updated\",\"familyName\":\"Tester\",\"middleName\":\"API\",\"nickname\":\"postman\",\"gender\":\"other\",\"birthdate\":\"1998-01-15\",\"profileUrl\":\"https://example.com/profile\",\"pictureUrl\":\"https://example.com/avatar.png\",\"websiteUrl\":\"https://example.com\",\"zoneinfo\":\"Asia/Phnom_Penh\",\"locale\":\"en\",\"phoneNumber\":\"+85512345678\",\"address\":{\"streetAddress\":\"12 Test Street\",\"locality\":\"Phnom Penh\",\"region\":\"Phnom Penh\",\"postalCode\":\"12000\",\"country\":\"KH\"}}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Get managed user authorities",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/authorities" },
+          "response": []
+        },
+        {
+          "name": "Assign test role to user",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"roleUuids\":[\"{{role_uuid}}\"],\"expiresAt\":\"2099-01-01T00:00:00Z\",\"reason\":\"Postman role-assignment test\"}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/roles"
+          },
+          "response": []
+        },
+        {
+          "name": "Grant test permission to user",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"permissionUuids\":[\"{{permission_uuid}}\"],\"effect\":\"GRANT\",\"expiresAt\":\"2099-01-01T00:00:00Z\",\"reason\":\"Postman permission test\"}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/permissions"
+          },
+          "response": []
+        },
+        {
+          "name": "Revoke test permission from user",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/permissions/{{permission_uuid}}?effect=GRANT&reason=Postman%20test" },
+          "response": []
+        },
+        {
+          "name": "Revoke test role from user",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/roles/{{role_uuid}}?reason=Postman%20test" },
+          "response": []
+        },
+        {
+          "name": "List managed user identities",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/identities" },
+          "response": []
+        },
+        {
+          "name": "Unlink identity from managed user (optional)",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/identities/{{identity_uuid}}", "description": "Set identity_uuid from the identities response. Skip unless this user has a linked identity to unlink." },
+          "response": []
+        },
+        {
+          "name": "Disable managed user",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/disable" },
+          "response": []
+        },
+        {
+          "name": "Enable managed user",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/enable" },
+          "response": []
+        },
+        {
+          "name": "Lock managed user",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/lock" },
+          "response": []
+        },
+        {
+          "name": "Unlock managed user",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/unlock" },
+          "response": []
+        },
+        {
+          "name": "Reset managed user password",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"newPassword\":\"{{new_password}}\"}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}/password"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03. Roles and permissions",
+      "item": [
+        {
+          "name": "List roles",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/roles?page=0&size=20&sort=name&direction=ASC" },
+          "response": []
+        },
+        {
+          "name": "Get test role",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/roles/{{role_uuid}}" },
+          "response": []
+        },
+        {
+          "name": "Update test role",
+          "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"description\":\"Updated by Postman\"}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/roles/{{role_uuid}}" },
+          "response": []
+        },
+        {
+          "name": "Assign test permission to role",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"permissionUuids\":[\"{{permission_uuid}}\"],\"expiresAt\":\"2099-01-01T00:00:00Z\",\"reason\":\"Postman role-permission test\"}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/roles/{{role_uuid}}/permissions" },
+          "response": []
+        },
+        {
+          "name": "Revoke test permission from role",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/roles/{{role_uuid}}/permissions/{{permission_uuid}}?reason=Postman%20test" },
+          "response": []
+        },
+        {
+          "name": "Deactivate test role",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/roles/{{role_uuid}}/deactivate" },
+          "response": []
+        },
+        {
+          "name": "Activate test role",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/roles/{{role_uuid}}/activate" },
+          "response": []
+        },
+        {
+          "name": "List permissions",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/permissions?page=0&size=50&sort=name&direction=ASC" },
+          "response": []
+        },
+        {
+          "name": "Get test permission",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/permissions/{{permission_uuid}}" },
+          "response": []
+        },
+        {
+          "name": "Update test permission",
+          "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"description\":\"Updated by Postman\"}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/permissions/{{permission_uuid}}" },
+          "response": []
+        },
+        {
+          "name": "Activate test permission",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/permissions/{{permission_uuid}}/activate" },
+          "response": []
+        },
+        {
+          "name": "Deactivate disposable permission",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/permissions/{{deactivate_permission_uuid}}/deactivate", "description": "The current endpoint implementation deletes this permission; use only the disposable record created in setup." },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04. Self-service (switch token)",
+      "description": "These requests use self_service_access_token. Obtain a separate authorization-code token for the registered test user and store it in the local environment first.",
+      "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{self_service_access_token}}", "type": "string" }] },
+      "item": [
+        {
+          "name": "Get current user",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/me" },
+          "response": []
+        },
+        {
+          "name": "Update current user profile",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"givenName\":\"Postman Updated\",\"familyName\":\"Tester\",\"locale\":\"en\",\"address\":{\"streetAddress\":\"12 Test Street\",\"locality\":\"Phnom Penh\",\"region\":\"Phnom Penh\",\"postalCode\":\"12000\",\"country\":\"KH\"}}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/me"
+          },
+          "response": []
+        },
+        {
+          "name": "Change current user password",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"currentPassword\":\"{{new_password}}\",\"newPassword\":\"{{rotated_password}}\",\"confirmPassword\":\"{{rotated_password}}\"}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/me/password"
+          },
+          "response": []
+        },
+        {
+          "name": "List current user identities",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/me/identities" },
+          "response": []
+        },
+        {
+          "name": "Unlink identity from current user (optional)",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/me/identities/{{identity_uuid}}", "description": "Set identity_uuid from the identities response. The service rejects unlinking the last sign-in method." },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05. OAuth 2.0 and OIDC",
+      "item": [
+        {
+          "name": "Get current user (/api/me) with administrator token",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/me" },
+          "response": []
+        },
+        {
+          "name": "OIDC provider discovery",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/.well-known/openid-configuration" },
+          "response": []
+        },
+        {
+          "name": "JSON Web Key Set",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/oauth2/jwks" },
+          "response": []
+        },
+        {
+          "name": "UserInfo",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/userinfo" },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06. Dynamic Client Registration",
+      "item": [
+        {
+          "name": "Get DCR client-credentials token",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('DCR token issued', () => pm.response.to.have.status(200));", "pm.environment.set('dcr_access_token', pm.response.json().access_token);"] } }],
+          "request": {
+            "method": "POST",
+            "auth": { "type": "basic", "basic": [{ "key": "username", "value": "{{dcr_client_id}}", "type": "string" }, { "key": "password", "value": "{{dcr_client_secret}}", "type": "string" }] },
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "urlencoded", "urlencoded": [{ "key": "grant_type", "value": "client_credentials", "type": "text" }, { "key": "scope", "value": "client.create", "type": "text" }] },
+            "url": "{{baseUrl}}/oauth2/token"
+          },
+          "response": []
+        },
+        {
+          "name": "Register OAuth client",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Client registered', () => pm.response.to.have.status(201));", "pm.environment.set('registered_client_id', pm.response.json().client_id);"] } }],
+          "request": {
+            "method": "POST",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{dcr_access_token}}", "type": "string" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"client_name\":\"Postman registered client\",\"redirect_uris\":[\"https://oauth.pstmn.io/v1/callback\"],\"grant_types\":[\"authorization_code\"],\"response_types\":[\"code\"],\"token_endpoint_auth_method\":\"none\",\"scope\":\"openid profile email\"}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/connect/register"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07. Cleanup (run after tests)",
+      "item": [
+        {
+          "name": "Delete managed test user",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/users/{{managed_user_uuid}}" },
+          "response": []
+        },
+        {
+          "name": "Delete test role",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/roles/{{role_uuid}}" },
+          "response": []
+        },
+        {
+          "name": "Delete test permission",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/permissions/{{permission_uuid}}" },
+          "response": []
+        },
+        {
+          "name": "Delete self-service test user",
+          "request": { "method": "DELETE", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{baseUrl}}/api/users/{{user_uuid}}" },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

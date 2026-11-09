@@ -5,16 +5,19 @@ plugins {
 
 group = 'kh.edu.istad'
 version = libs.versions.istad.version.get()
+
 repositories {
     mavenCentral()
+
     maven {
         name = 'buf'
-        url = 'https://buf.build/gen/maven'
+        url = uri('https://buf.build/gen/maven')
     }
 }
 
 def bufProtoJavaSdkVersion = providers.gradleProperty('bufProtoJavaSdkVersion')
         .getOrElse('36.2.0.1.20261106043200.71691a939ff2')
+
 def bufGrpcJavaSdkVersion = providers.gradleProperty('bufGrpcJavaSdkVersion')
         .getOrElse('1.85.1.1.20261106043200.71691a939ff2')
 
@@ -23,13 +26,13 @@ dependencies {
     api "build.buf.gen:sophiram-istad_istad-proto_grpc_java:${bufGrpcJavaSdkVersion}"
 }
 
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
         }
     }
+
     repositories {
         mavenLocal()
     }

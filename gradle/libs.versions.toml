@@ -4,6 +4,8 @@ spring-boot-gradle-plugin = "4.1.1"
 dependency-management-plugin = "1.1.7"
 springdoc-openapi-starter-webmvc-ui = "3.2.0"
 istad-version = "1.0.0"
+testcontainers = "2.0.5"
+mockito = "5.24.0"
 
 
 # gRPC
@@ -20,6 +22,9 @@ springdoc-openapi-starter-webmvc-ui = {module = "org.springdoc:springdoc-openapi
 spring-boot-starter-webclient = { module = "org.springframework.boot:spring-boot-starter-webclient"}
 spring-boot-starter-webflux = {module = "org.springframework.boot:spring-boot-starter-webflux"}
 spring-boot-starter-web = {module = "org.springframework.boot:spring-boot-starter-web"}
+testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 
 istad-common-swagger = {module = "kh.edu.istad:istad-common-swagger", version.ref = "istad-version"}
 istad-common-domain = { module = "kh.edu.istad:istad-common-domain", version.ref = "istad-version"}
@@ -49,6 +54,15 @@ product-application-service = { module = "kh.edu.istad:product-application-servi
 product-service-persistence = { module = "kh.edu.istad:product-service-persistence", version.ref = "istad-version" }
 product-service-grpc = { module = "kh.edu.istad:product-service-grpc", version.ref = "istad-version" }
 product-service-restapi = { module = "kh.edu.istad:product-service-restapi", version.ref = "istad-version" }
+
+# IAM-SERVICE
+iam-domain-core = { module = "kh.edu.istad:iam-domain-core", version.ref = "istad-version" }
+iam-application-service = { module = "kh.edu.istad:iam-application-service", version.ref = "istad-version" }
+iam-persistence = { module = "kh.edu.istad:iam-persistence", version.ref = "istad-version" }
+iam-infrastructure = { module = "kh.edu.istad:iam-infrastructure", version.ref = "istad-version" }
+iam-rest-api = { module = "kh.edu.istad:iam-rest-api", version.ref = "istad-version" }
+iam-web = { module = "kh.edu.istad:iam-web", version.ref = "istad-version" }
+iam-main = { module = "kh.edu.istad:iam-main", version.ref = "istad-version" }
 
 [bundles]
 gradle-dependency-management = [
