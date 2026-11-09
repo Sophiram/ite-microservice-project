@@ -1,26 +1,21 @@
 plugins {
-    id 'spring-cloud-common-conventions'
+    alias(libs.plugins.spring.boot.common.conventions)
 }
 
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    implementation 'org.springframework.boot:spring-boot-starter-liquibase'
-
-    implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server'
-    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    runtimeOnly 'org.postgresql:postgresql'
-    testCompileOnly 'org.projectlombok:lombok'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testAnnotationProcessor 'org.projectlombok:lombok'
+bootJar {
+    enabled = false
 }
 
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.dependencySubstitution {
+            substitute module('kh.edu.istad:iam-domain-core') using project(':iam-domain:iam-domain-core')
+            substitute module('kh.edu.istad:iam-application-service') using project(':iam-domain:iam-application-service')
+            substitute module('kh.edu.istad:iam-persistence') using project(':iam-persistence')
+            substitute module('kh.edu.istad:iam-infrastructure') using project(':iam-infrastructure')
+            substitute module('kh.edu.istad:iam-rest-api') using project(':iam-rest-api')
+            substitute module('kh.edu.istad:iam-web') using project(':iam-web')
+            substitute module('kh.edu.istad:iam-main') using project(':iam-main')
+        }
+    }
+}

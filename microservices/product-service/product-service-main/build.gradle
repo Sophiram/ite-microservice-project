@@ -1,7 +1,12 @@
 plugins {
     alias(libs.plugins.spring.boot.common.conventions)
 }
-
+dependencyManagement {
+    dependencies {
+        dependency 'com.google.protobuf:protobuf-java:4.36.2'
+        dependency 'com.google.protobuf:protobuf-java-util:4.36.2'
+    }
+}
 dependencies {
     implementation(libs.product.service.persistence)
     implementation(libs.product.service.grpc)

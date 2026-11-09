@@ -16,4 +16,16 @@ dependencyResolutionManagement {
         }
     }
 }
+
 rootProject.name = 'iam-service'
+includeBuild('../../istad-common')
+
+// Section A - module tree
+include 'iam-domain'
+include 'iam-domain:iam-domain-core'            // plain Java: User, Role, Permission, Identity, assignments
+include 'iam-domain:iam-application-service'    // use cases, commands, results, output ports
+include 'iam-persistence'                       // Spring Data JPA adapters + Liquibase
+include 'iam-infrastructure'                    // Spring Authorization Server adapter
+include 'iam-rest-api'                          // REST controllers, DTOs, API security
+include 'iam-web'                               // JTE pages + i18n
+include 'iam-main'                              // Spring Boot entry point + wiring

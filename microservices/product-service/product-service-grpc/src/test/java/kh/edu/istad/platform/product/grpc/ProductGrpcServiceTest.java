@@ -5,7 +5,6 @@ import io.grpc.Server;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.Status;
-import io.grpc.stub.StreamObserver;
 import kh.edu.istad.common.grpc.product.v1.BatchGetProductsRequest;
 import kh.edu.istad.common.grpc.product.v1.GetProductRequest;
 import kh.edu.istad.common.grpc.product.v1.ProductServiceGrpc;
@@ -13,7 +12,6 @@ import kh.edu.istad.common.grpc.product.v1.ReleaseStockRequest;
 import kh.edu.istad.common.grpc.product.v1.ReserveStockRequest;
 import kh.edu.istad.common.grpc.product.v1.StockItem;
 import kh.edu.istad.platform.product.domain.dto.ProductResult;
-import kh.edu.istad.platform.product.domain.dto.ReleaseStockCommand;
 import kh.edu.istad.platform.product.domain.dto.ReserveStockCommand;
 import kh.edu.istad.platform.product.domain.dto.StockReservationResult;
 import kh.edu.istad.platform.product.domain.exception.InsufficientStockException;
@@ -31,7 +29,6 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

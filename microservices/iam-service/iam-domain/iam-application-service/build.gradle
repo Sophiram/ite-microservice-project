@@ -1,0 +1,13 @@
+
+plugins {
+    alias(libs.plugins.java.common.conventions)
+}
+
+dependencies {
+    api project(':iam-domain:iam-domain-core')
+
+    testImplementation platform('org.junit:junit-bom:6.0.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation libs.mockito.core
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}

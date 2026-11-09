@@ -1,14 +1,14 @@
 package kh.edu.istad.platform.product.grpc;
 
-import kh.edu.istad.common.grpc.product.v1.BatchGetProductsRequest;
-import kh.edu.istad.common.grpc.product.v1.BatchGetProductsResponse;
-import kh.edu.istad.common.grpc.product.v1.GetProductRequest;
-import kh.edu.istad.common.grpc.product.v1.GetProductResponse;
-import kh.edu.istad.common.grpc.product.v1.ProductServiceGrpc;
-import kh.edu.istad.common.grpc.product.v1.ReleaseStockRequest;
-import kh.edu.istad.common.grpc.product.v1.ReleaseStockResponse;
-import kh.edu.istad.common.grpc.product.v1.ReserveStockRequest;
-import kh.edu.istad.common.grpc.product.v1.ReserveStockResponse;
+import build.buf.gen.istad.product.v1.BatchGetProductsRequest;
+import build.buf.gen.istad.product.v1.BatchGetProductsResponse;
+import build.buf.gen.istad.product.v1.GetProductRequest;
+import build.buf.gen.istad.product.v1.GetProductResponse;
+import build.buf.gen.istad.product.v1.ProductServiceGrpc;
+import build.buf.gen.istad.product.v1.ReleaseStockRequest;
+import build.buf.gen.istad.product.v1.ReleaseStockResponse;
+import build.buf.gen.istad.product.v1.ReserveStockRequest;
+import build.buf.gen.istad.product.v1.ReserveStockResponse;
 import kh.edu.istad.platform.product.domain.dto.ReleaseStockCommand;
 import kh.edu.istad.platform.product.domain.dto.ReserveStockCommand;
 import kh.edu.istad.platform.product.domain.usecase.QueryProductUseCase;

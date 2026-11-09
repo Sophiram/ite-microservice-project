@@ -1,9 +1,9 @@
 package kh.edu.istad.platform.product.grpc.mapper;
 
-import kh.edu.istad.common.grpc.product.v1.GetProductResponse;
-import kh.edu.istad.common.grpc.product.v1.Product;
-import kh.edu.istad.common.grpc.product.v1.ProductStatus;
-import kh.edu.istad.common.grpc.v1.Money;
+import build.buf.gen.istad.product.v1.GetProductResponse;
+import build.buf.gen.istad.product.v1.Product;
+import build.buf.gen.istad.product.v1.ProductStatus;
+import build.buf.gen.istad.common.v1.Money;
 import kh.edu.istad.platform.product.domain.dto.ProductResult;
 
 public final class ProductGrpcMapper {

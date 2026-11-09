@@ -1,7 +1,6 @@
 package kh.edu.istad.platform.order;
 
 import kh.edu.istad.platform.order.config.ServicePropConfig;
-import kh.edu.istad.platform.order.domain.dto.CustomerResponse;
 import kh.edu.istad.platform.order.domain.dto.QueryCustomerResult;
 import kh.edu.istad.platform.order.domain.port.out.client.CustomerServiceClient;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;

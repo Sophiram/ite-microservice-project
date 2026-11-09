@@ -1,6 +1,6 @@
 package kh.edu.istad.platform.order.client.config;
 
-import kh.edu.istad.common.grpc.product.v1.ProductServiceGrpc;
+import build.buf.gen.istad.product.v1.ProductServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.beans.factory.annotation.Value;

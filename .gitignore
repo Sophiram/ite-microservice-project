@@ -46,3 +46,8 @@ build/
 .gradle/
 databasechangelog.csv
 istad-proto/
+.env
+**/.env
+.env.*
+!**/.env.example
+!.env.example

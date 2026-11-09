@@ -9,7 +9,13 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+
+        maven {
+            name = 'buf'
+            url = uri('https://buf.build/gen/maven')
+        }
     }
+
     versionCatalogs {
         libs {
             from(files("../gradle/libs.versions.toml"))

@@ -6,6 +6,14 @@ plugins {
 
 }
 
+repositories {
+    maven {
+        name = 'buf'
+        url = uri('https://buf.build/gen/maven')
+    }
+    mavenCentral()
+}
+
 dependencies {
 //    implementation 'io.projectreactor:reactor-core'
 //    implementation 'kh.edu.istad:order-application-service'

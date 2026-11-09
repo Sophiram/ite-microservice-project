@@ -1,13 +1,10 @@
 package kh.edu.istad.platform.customer.restapi.mapper;
 
 import kh.edu.istad.platform.customer.domain.dto.*;
-import kh.edu.istad.platform.customer.domain.entity.Customer;
-import kh.edu.istad.platform.customer.domain.valueobject.CustomerSegment;
 import kh.edu.istad.platform.customer.domain.valueobject.Email;
 import kh.edu.istad.platform.customer.domain.valueobject.PhoneNumber;
 import kh.edu.istad.platform.customer.restapi.dto.*;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 import java.util.UUID;
