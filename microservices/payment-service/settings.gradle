@@ -1,0 +1,32 @@
+pluginManagement {
+    includeBuild('../../build-logic')
+
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'buf'
+            url = uri('https://buf.build/gen/maven')
+        }
+        mavenCentral()
+    }
+    versionCatalogs {
+        libs {
+            from(files("../../gradle/libs.versions.toml"))
+        }
+    }
+}
+rootProject.name = 'payment-service'
+
+includeBuild '../../istad-common'
+
+include 'payment-service-main'
+include 'payment-service-domain:payment-domain-core'
+include 'payment-service-domain:payment-application-service'
+include 'payment-service-persistence'
+include 'payment-service-message'

@@ -1,0 +1,59 @@
+server:
+  port: ${SERVER_PORT:9094}
+
+spring:
+  application:
+    name: payment-service
+  profiles:
+    active: dev
+
+  r2dbc:
+    url: ${SPRING_R2DBC_URL:r2dbc:postgresql://localhost:9543/db_payment}
+    username: ${SPRING_R2DBC_USERNAME:iteuser}
+    password: ${SPRING_R2DBC_PASSWORD:qwerqwer}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9099}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      group-id: payment-service-group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
+
+  config:
+    import:
+      - "optional:consul:"
+
+  cloud:
+    consul:
+      enabled: true
+      config:
+        enabled: true
+        format: yaml
+        fail-fast: false
+        watch:
+          enabled: true
+          wait-time: 5
+      discovery:
+        enabled: true
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        ip-address: 127.0.0.1
+        prefer-ip-address: true
+        service-name: payment-service
+        instance-id: ${spring.application.name}-${random.value}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

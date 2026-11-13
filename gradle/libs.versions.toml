@@ -36,6 +36,15 @@ order-application-service = {module = "kh.edu.istad:order-application-service", 
 order-domain-core = {module = "kh.edu.istad:order-domain-core", version.ref = "istad-version"}
 order-service-client = {module = "kh.edu.istad:order-service-client", version.ref = "istad-version"}
 order-service-persistence = {module = "kh.edu.istad:order-service-persistence", version.ref = "istad-version"}
+order-service-message = {module = "kh.edu.istad:order-service-message", version.ref = "istad-version"}
+
+# PAYMENT-SERVICE
+payment-domain-core = {module = "kh.edu.istad:payment-domain-core", version.ref = "istad-version"}
+payment-application-service = {module = "kh.edu.istad:payment-application-service", version.ref = "istad-version"}
+payment-service-persistence = {module = "kh.edu.istad:payment-service-persistence", version.ref = "istad-version"}
+payment-service-message = {module = "kh.edu.istad:payment-service-message", version.ref = "istad-version"}
+
+
 
 # CUSTOMER-SERVICE
 customer-domain-core = {module = "kh.edu.istad:customer-domain-core", version.ref = "istad-version"}

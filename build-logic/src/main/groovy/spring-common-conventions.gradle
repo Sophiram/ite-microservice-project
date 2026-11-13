@@ -14,6 +14,9 @@ dependencyManagement {
     imports {
         mavenBom 'org.springframework.boot:spring-boot-dependencies:4.1.1'
     }
+    dependencies {
+        dependency 'com.google.protobuf:protobuf-java:4.36.2'
+    }
 }
 dependencies {
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'

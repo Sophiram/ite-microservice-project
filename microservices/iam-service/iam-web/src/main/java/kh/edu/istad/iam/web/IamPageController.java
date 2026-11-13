@@ -93,14 +93,25 @@ public class IamPageController {
     public String login(Model model) {
         model.addAttribute("providerIds", List.of("google", "github", "facebook", "telegram"));
         model.addAttribute("error", false);
+        model.addAttribute("logout", false);
         addDefault(model, "registered", false);
-        return "login";
+        return "index.html";
     }
 
     @GetMapping(value = "/login", params = "error")
     public String loginError(Model model) {
         model.addAttribute("providerIds", List.of("google", "github", "facebook", "telegram"));
         model.addAttribute("error", true);
+        model.addAttribute("logout", false);
+        addDefault(model, "registered", false);
+        return "login";
+    }
+
+    @GetMapping(value = "/login", params = "logout")
+    public String loginLogout(Model model) {
+        model.addAttribute("providerIds", List.of("google", "github", "facebook", "telegram"));
+        model.addAttribute("error", false);
+        model.addAttribute("logout", true);
         addDefault(model, "registered", false);
         return "login";
     }

@@ -42,20 +42,38 @@ spring:
   # ------------------------------------------------------------------
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
       client:
-        registration:
-          order-service:
-            provider: spring-auth-server
-            client-id: order-service
-            # Secret matches what DataSeeder encodes. Use ORDER_CLIENT_SECRET env var in prod.
-            client-secret: ${ORDER_CLIENT_SECRET:order-secret}
-            authorization-grant-type: client_credentials
-            scope: customer.read, business.read
         provider:
-          spring-auth-server:
-            # Points at the Spring Authorization Server token endpoint.
-            # Override via AUTH_SERVER_TOKEN_URI env var.
-            token-uri: ${AUTH_SERVER_TOKEN_URI:http://localhost:9000/oauth2/token}
+          iam-service:
+            issuer-uri: http://localhost:9000
+        registration:
+          front-bff-client:
+            provider: iam-service
+            client-id: front-bff-client
+            client-authentication-method: none
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+
+          # Optional: machine-to-machine OAuth2 client
+#          order-service:
+#            provider: spring-auth-server
+#            client-id: order-service
+#            client-secret: ${ORDER_CLIENT_SECRET:order-secret}
+#            authorization-grant-type: client_credentials
+#            scope:
+#              - customer.read
+#              - business.read
+#          spring-auth-server:
+#            token-uri: ${AUTH_SERVER_TOKEN_URI:http://localhost:9000/oauth2/token}
+
+
+
 
   # HTTP service client base URLs (consumed by ClientConfig @Value injection)
   http:
@@ -68,6 +86,25 @@ spring:
         base-url: lb://customer-service
       business-service:
         base-url: lb://business-service
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9099}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+      properties:
+        spring.json.add.type.headers: true
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: order-service-group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "kh.edu.istad.platform.*"
+
+
 service:
   product:
     grpc:

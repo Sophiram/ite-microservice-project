@@ -9,4 +9,9 @@ dependencies {
     api libs.reactor.core
     api libs.order.domain.core
     api libs.istad.common.domain
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'io.projectreactor:reactor-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

@@ -41,8 +41,43 @@ public class RegisteredClientInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         seedBrowserClient();
+        seedFrontBffClient();
         if (dcrClientSecret != null && !dcrClientSecret.isBlank()) seedDcrClient();
     }
+
+    private void seedFrontBffClient() {
+        String clientId = "front-bff-client";
+        if (clients.findByClientId(clientId) != null) return;
+
+        RegisteredClient frontBff = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId(clientId)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("http://localhost:9999/login/oauth2/code/front-bff-client")
+                .redirectUri("http://localhost:9092/login/oauth2/code/front-bff-client")
+                .redirectUri("http://localhost:8080/login/oauth2/code/front-bff-client")
+                .postLogoutRedirectUri("http://localhost:9999/")
+                .postLogoutRedirectUri("http://localhost:9092/")
+                .postLogoutRedirectUri("http://localhost:8080/")
+
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                .clientSettings(ClientSettings.builder()
+                        .requireProofKey(true) // Required for public clients (method: none)
+                        .requireAuthorizationConsent(false) // Set true if you want the consent screen
+                        .build())
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenTimeToLive(Duration.ofMinutes(15))
+                        .refreshTokenTimeToLive(Duration.ofDays(7))
+                        .reuseRefreshTokens(false)
+                        .build())
+                .build();
+
+        clients.save(frontBff);
+    }
+
+
 
     private void seedBrowserClient() {
         if (clients.findByClientId(browserClientId) != null) return;

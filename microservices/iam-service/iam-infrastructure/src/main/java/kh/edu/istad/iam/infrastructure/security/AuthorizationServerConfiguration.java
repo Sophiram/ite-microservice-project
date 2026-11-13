@@ -84,7 +84,7 @@ public class AuthorizationServerConfiguration {
         http.requestCache(cache -> cache.requestCache(requestCache));
 
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/login/**", "/register", "/assets/**", "/css/**", "/favicon.ico", "/error").permitAll()
+                        .requestMatchers("/login", "/login/**", "/register", "/assets/**", "/index.html", "/css/**", "/favicon.ico", "/error").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form.loginPage("/login").permitAll())
                 .oauth2Login(oauth -> oauth

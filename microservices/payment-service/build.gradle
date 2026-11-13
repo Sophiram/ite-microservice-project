@@ -1,0 +1,18 @@
+plugins {
+    id 'spring-boot-common-conventions'
+}
+
+bootJar {
+    enabled = false
+}
+
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.dependencySubstitution {
+            substitute module('kh.edu.istad:payment-application-service') using project(':payment-service-domain:payment-application-service')
+            substitute module('kh.edu.istad:payment-domain-core') using project(':payment-service-domain:payment-domain-core')
+            substitute module('kh.edu.istad:payment-service-persistence') using project(':payment-service-persistence')
+            substitute module('kh.edu.istad:payment-service-message') using project(':payment-service-message')
+        }
+    }
+}
