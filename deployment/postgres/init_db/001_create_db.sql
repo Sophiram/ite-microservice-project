@@ -6,3 +6,4 @@ CREATE DATABASE db_oauth2 OWNER iteuser;
 CREATE DATABASE db_media OWNER iteuser;
 CREATE DATABASE db_oauth2_iam_service OWNER iteuser;
 CREATE DATABASE db_product OWNER iteuser;
+CREATE DATABASE db_iam OWNER iteuser;

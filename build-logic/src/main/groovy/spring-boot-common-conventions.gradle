@@ -8,12 +8,15 @@ group = 'kh.edu.istad'
 version = '1.0.0'
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(24)
     }
 }
 dependencyManagement {
     imports {
         mavenBom 'org.springframework.boot:spring-boot-dependencies:4.1.1'
+    }
+    dependencies {
+        dependency 'com.google.protobuf:protobuf-java:4.36.2'
     }
 }
 dependencies {

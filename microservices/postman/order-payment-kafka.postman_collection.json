@@ -1,0 +1,381 @@
+{
+  "info": {
+    "_postman_id": "b73a45c2-8491-4cf1-a472-8d76e4ef5099",
+    "name": "Order & Payment Service Kafka Flow",
+    "description": "End-to-end integration test suite demonstrating asynchronous event-driven communication between Order Service and Payment Service over Apache Kafka.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "order_service_url",
+      "value": "http://localhost:9092",
+      "type": "string"
+    },
+    {
+      "key": "payment_service_kafka_url",
+      "value": "http://localhost:9094",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "paymentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "directOrderId",
+      "value": "e1112222-3333-4444-5555-666677778888",
+      "type": "string"
+    },
+    {
+      "key": "directCustomerId",
+      "value": "a9998888-7777-6666-5555-444433332222",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Checks",
+      "item": [
+        {
+          "name": "1.1 Check Order Service Health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Order Service is UP\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql(\"UP\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{order_service_url}}/actuator/health",
+              "host": ["{{order_service_url}}"],
+              "path": ["actuator", "health"]
+            }
+          }
+        },
+        {
+          "name": "1.2 Check Payment Service Health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Payment Service is UP\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql(\"UP\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{payment_service_kafka_url}}/actuator/health",
+              "host": ["{{payment_service_kafka_url}}"],
+              "path": ["actuator", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Kafka Event-Driven Integration Flow",
+      "description": "Covers initial order placement in Order Service, automatic event publication to Kafka topic 'order.created', asynchronous consumption by Payment Service, and payment persistence.",
+      "item": [
+        {
+          "name": "2.1 Create Order (Publishes to Kafka order.created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Order initiated successfully with PENDING status\", function () {",
+                  "    pm.expect(jsonData.orderId).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.trackingId).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.orderStatus).to.eql(\"PENDING\");",
+                  "});",
+                  "",
+                  "pm.environment.set(\"orderId\", jsonData.orderId);",
+                  "pm.collectionVariables.set(\"orderId\", jsonData.orderId);",
+                  "console.log(\"Saved Order ID for Kafka verification:\", jsonData.orderId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"d290f1ee-6c54-4b01-90e6-d701748f0851\",\n  \"businessId\": \"c301f2ee-7c65-4b02-90e7-d802859f1962\",\n  \"price\": 200.00,\n  \"items\": [\n    {\n      \"productId\": \"a101f3ee-8c76-4b03-90e8-e903960f2073\",\n      \"quantity\": 2,\n      \"price\": 100.00,\n      \"subTotal\": 200.00\n    }\n  ],\n  \"deliveryAddress\": {\n    \"street\": \"123 Russian Federation Blvd\",\n    \"postalCode\": \"12150\",\n    \"city\": \"Phnom Penh\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{order_service_url}}/api/orders",
+              "host": ["{{order_service_url}}"],
+              "path": ["api", "orders"]
+            }
+          }
+        },
+        {
+          "name": "2.2 Verify Payment Processed via Kafka (Query by Order ID)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "var currentOrderId = pm.environment.get(\"orderId\") || pm.collectionVariables.get(\"orderId\");",
+                  "",
+                  "pm.test(\"Payment was automatically created from Kafka order.created event\", function () {",
+                  "    pm.expect(jsonData.orderId).to.eql(currentOrderId);",
+                  "    pm.expect(jsonData.paymentStatus).to.eql(\"COMPLETED\");",
+                  "    pm.expect(jsonData.price).to.eql(200.00);",
+                  "    pm.expect(jsonData.paymentId).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "pm.environment.set(\"paymentId\", jsonData.paymentId);",
+                  "pm.collectionVariables.set(\"paymentId\", jsonData.paymentId);",
+                  "console.log(\"Payment created via Kafka. Payment ID:\", jsonData.paymentId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{payment_service_kafka_url}}/api/payments/order/{{orderId}}",
+              "host": ["{{payment_service_kafka_url}}"],
+              "path": ["api", "payments", "order", "{{orderId}}"]
+            }
+          }
+        },
+        {
+          "name": "2.3 Get Payment Details by Payment ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "var currentPaymentId = pm.environment.get(\"paymentId\") || pm.collectionVariables.get(\"paymentId\");",
+                  "",
+                  "pm.test(\"Payment ID matches\", function () {",
+                  "    pm.expect(jsonData.paymentId).to.eql(currentPaymentId);",
+                  "    pm.expect(jsonData.paymentStatus).to.eql(\"COMPLETED\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{payment_service_kafka_url}}/api/payments/{{paymentId}}",
+              "host": ["{{payment_service_kafka_url}}"],
+              "path": ["api", "payments", "{{paymentId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Direct Payment Service REST APIs",
+      "description": "Direct testing of Payment Service capabilities, including manual processing, idempotency, validation errors, and collection queries.",
+      "item": [
+        {
+          "name": "3.1 Direct Process Payment (Manual REST)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Payment completed and published to Kafka topics\", function () {",
+                  "    pm.expect(jsonData.paymentId).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.paymentStatus).to.eql(\"COMPLETED\");",
+                  "    pm.expect(jsonData.price).to.eql(150.00);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{directOrderId}}\",\n  \"customerId\": \"{{directCustomerId}}\",\n  \"price\": 150.00\n}"
+            },
+            "url": {
+              "raw": "{{payment_service_kafka_url}}/api/payments",
+              "host": ["{{payment_service_kafka_url}}"],
+              "path": ["api", "payments"]
+            }
+          }
+        },
+        {
+          "name": "3.2 Verify Payment Idempotency (Duplicate Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Returns existing payment without double charging\", function () {",
+                  "    pm.expect(jsonData.orderId).to.eql(pm.collectionVariables.get(\"directOrderId\"));",
+                  "    pm.expect(jsonData.message).to.eql(\"Payment already processed\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{directOrderId}}\",\n  \"customerId\": \"{{directCustomerId}}\",\n  \"price\": 150.00\n}"
+            },
+            "url": {
+              "raw": "{{payment_service_kafka_url}}/api/payments",
+              "host": ["{{payment_service_kafka_url}}"],
+              "path": ["api", "payments"]
+            }
+          }
+        },
+        {
+          "name": "3.3 Test Payment Validation Failure (Negative Price)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 (Handled Failure)\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Payment marked as FAILED and published to payment.failed topic\", function () {",
+                  "    pm.expect(jsonData.paymentStatus).to.eql(\"FAILED\");",
+                  "    pm.expect(jsonData.failureMessages).to.include(\"Payment price must be greater than zero\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"f9991111-2222-3333-4444-555566667777\",\n  \"customerId\": \"{{directCustomerId}}\",\n  \"price\": -50.00\n}"
+            },
+            "url": {
+              "raw": "{{payment_service_kafka_url}}/api/payments",
+              "host": ["{{payment_service_kafka_url}}"],
+              "path": ["api", "payments"]
+            }
+          }
+        },
+        {
+          "name": "3.4 Get All Payments",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Payments returned as an array\", function () {",
+                  "    pm.expect(jsonData).to.be.an(\"array\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{payment_service_kafka_url}}/api/payments",
+              "host": ["{{payment_service_kafka_url}}"],
+              "path": ["api", "payments"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

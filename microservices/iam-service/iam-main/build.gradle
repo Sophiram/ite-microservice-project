@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.spring.boot.common.conventions)
+    alias(libs.plugins.spring.cloud.common.conventions)
 }
 
 dependencies {
@@ -11,6 +12,12 @@ dependencies {
     implementation(libs.iam.infrastructure)
     implementation(libs.iam.rest.api)
     implementation(libs.iam.web)
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-security-test'

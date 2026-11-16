@@ -1,9 +1,13 @@
+name: istad-project
+
 volumes:
-  ite-pg-vol:
+  project-pg-vol:
     driver: local
+
 networks:
   ite-net:
     external: true
+
 services:
   ite-postgres:
     container_name: ite-postgres
@@ -11,11 +15,11 @@ services:
     ports:
       - "9543:5432"
     environment:
-      POSTGRES_PASSWORD: qwerqwer
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-qwerqwer}
       POSTGRES_USER: iteuser
     volumes:
-      - ite-pg-vol:/var/lib/postgresql/18/docker
+      - project-pg-vol:/var/lib/postgresql/18/docker
       - ./init_db/:/docker-entrypoint-initdb.d
     networks:
       - ite-net
-    restart: always
+    restart: unless-stopped

@@ -29,8 +29,16 @@ public class ApplicationPortAdapters {
     CurrentActorProvider currentActorProvider() {
         return () -> {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            return authentication == null || !authentication.isAuthenticated()
-                    ? "system" : authentication.getName();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return "system";
+            }
+            if (authentication.getPrincipal() instanceof org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal oauth) {
+                Object username = oauth.getAttribute("iam_username");
+                if (username != null && !username.toString().isBlank()) {
+                    return username.toString();
+                }
+            }
+            return authentication.getName();
         };
     }
 }

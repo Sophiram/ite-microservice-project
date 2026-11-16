@@ -49,10 +49,28 @@ public final class FindOrProvisionFederatedUserUseCase {
         public AuthUserResult execute(FederatedIdentityCommand command) {
             var existingIdentity = identities.findByProviderAndSubject(command.provider(), command.subject());
             if (existingIdentity.isPresent()) {
-                User existingUser = UseCaseSupport.require(
-                        users.findById(existingIdentity.get().getUserId()), "User");
-                existingIdentity.get().recordLogin(clock.instant());
-                identities.save(existingIdentity.get());
+                Identity identity = existingIdentity.get();
+                User loggedInUser = null;
+                if (actors != null && actors.currentActor() != null
+                        && !actors.currentActor().isBlank()
+                        && !"system".equalsIgnoreCase(actors.currentActor())
+                        && !"anonymousUser".equalsIgnoreCase(actors.currentActor())) {
+                    loggedInUser = users.findByUsernameOrEmail(actors.currentActor()).orElse(null);
+                    if (loggedInUser == null) {
+                        try {
+                            loggedInUser = users.findByUuid(UUID.fromString(actors.currentActor())).orElse(null);
+                        } catch (Exception ignored) {}
+                    }
+                }
+
+                if (loggedInUser != null && !loggedInUser.getId().equals(identity.getUserId())) {
+                    identity.setUserId(loggedInUser.getId());
+                }
+
+                User existingUser = loggedInUser != null ? loggedInUser : UseCaseSupport.require(
+                        users.findById(identity.getUserId()), "User");
+                identity.recordLogin(clock.instant());
+                identities.save(identity);
 
                 Profile cur = existingUser.getProfile();
                 String given = cur != null && cur.givenName() != null && !cur.givenName().isBlank()
@@ -74,12 +92,55 @@ public final class FindOrProvisionFederatedUserUseCase {
                 return loadForAuthentication.execute(existingUser.getUsername());
             }
 
-            User user = command.emailVerified() && command.email() != null
-                    ? users.findByEmail(User.normalizeEmail(command.email())).orElse(null)
-                    : null;
+            User user = null;
+            if (actors != null && actors.currentActor() != null
+                    && !actors.currentActor().isBlank()
+                    && !"system".equalsIgnoreCase(actors.currentActor())
+                    && !"anonymousUser".equalsIgnoreCase(actors.currentActor())) {
+                user = users.findByUsernameOrEmail(actors.currentActor()).orElse(null);
+                if (user == null) {
+                    try {
+                        user = users.findByUuid(UUID.fromString(actors.currentActor())).orElse(null);
+                    } catch (Exception ignored) {}
+                }
+            }
+
+            if (user == null && command.email() != null && !command.email().isBlank()) {
+                user = users.findByEmail(User.normalizeEmail(command.email())).orElse(null);
+            }
+
+            if (user != null) {
+                // If the user already has an identity for this provider, update subject and attributes instead of failing
+                var existingProviderIdentity = identities.findByUserId(user.getId()).stream()
+                        .filter(i -> !i.isDeleted() && i.getProvider() == command.provider())
+                        .findFirst();
+                if (existingProviderIdentity.isPresent()) {
+                    Identity id = existingProviderIdentity.get();
+                    id.setProviderSubject(command.subject());
+                    id.setEmail(command.email());
+                    id.setEmailVerified(command.emailVerified());
+                    if (command.displayName() != null && !command.displayName().isBlank()) {
+                        id.setDisplayName(command.displayName());
+                    }
+                    if (command.pictureUrl() != null && !command.pictureUrl().isBlank()) {
+                        id.setPictureUrl(command.pictureUrl());
+                    }
+                    if (command.attributes() != null && !command.attributes().isEmpty()) {
+                        id.setAttributes(command.attributes());
+                    }
+                    id.recordLogin(clock.instant());
+                    identities.save(id);
+                    return loadForAuthentication.execute(user.getUsername());
+                }
+            }
+
             if (user == null) {
-                String username = uniqueUsername(command.username(), command.provider().registrationId());
-                String email = command.emailVerified() && command.email() != null
+                String rawName = command.username();
+                if ((rawName == null || rawName.isBlank()) && command.email() != null && command.email().contains("@")) {
+                    rawName = command.email().substring(0, command.email().indexOf('@'));
+                }
+                String username = uniqueUsername(rawName, command.provider().registrationId());
+                String email = (command.email() != null && !command.email().isBlank())
                         ? User.normalizeEmail(command.email())
                         : "federated-" + UUID.randomUUID() + "@users.invalid";
                 var attributes = command.attributes();
@@ -105,7 +166,9 @@ public final class FindOrProvisionFederatedUserUseCase {
             Identity identity = Identity.link(user.getId(), command.provider(), command.subject(), command.email(),
                     command.emailVerified(), command.displayName(), command.username(), command.pictureUrl(),
                     command.attributes(), clock.instant());
-            identity.setCreatedBy(actors.currentActor());
+            String actor = (actors != null && actors.currentActor() != null && !actors.currentActor().isBlank())
+                    ? actors.currentActor() : "system";
+            identity.setCreatedBy(actor);
             identities.save(identity);
             return loadForAuthentication.execute(user.getUsername());
         }
@@ -113,6 +176,10 @@ public final class FindOrProvisionFederatedUserUseCase {
         private String uniqueUsername(String requestedUsername, String fallback) {
             String base = requestedUsername == null || requestedUsername.isBlank()
                     ? fallback : requestedUsername.trim();
+            base = base.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9._-]", ".");
+            if (base.isBlank()) {
+                base = fallback.toLowerCase(java.util.Locale.ROOT);
+            }
             String candidate = base;
             while (users.existsByUsername(candidate)) {
                 candidate = base + "-" + UUID.randomUUID().toString().substring(0, 8);
@@ -122,8 +189,10 @@ public final class FindOrProvisionFederatedUserUseCase {
 
         private void assignDefaultRole(User user) {
             if (roles == null || assignments == null) return;
+            String actor = (actors != null && actors.currentActor() != null && !actors.currentActor().isBlank())
+                    ? actors.currentActor() : "system";
             roles.findByName("USER").ifPresent(role -> assignments.save(UserRole.assign(user.getId(), role,
-                    actors.currentActor(), null, "Default role for federated sign-in", clock.instant())));
+                    actor, null, "Default role for federated sign-in", clock.instant())));
         }
 
         private static String attribute(java.util.Map<String, Object> attributes, String name) {

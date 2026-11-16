@@ -46,8 +46,8 @@ import kh.edu.istad.iam.rest.dto.response.RoleAssignmentResponse;
 import kh.edu.istad.iam.rest.dto.request.UpdateUserProfileRequest;
 import kh.edu.istad.iam.rest.dto.response.UserAuthoritiesResponse;
 import kh.edu.istad.iam.rest.dto.response.UserResponse;
-import kh.edu.istad.iam.rest.support.ApiAuthentication;
-import kh.edu.istad.iam.rest.support.ApiPageParameters;
+import kh.edu.istad.iam.rest.util.ApiAuthentication;
+import kh.edu.istad.iam.rest.util.ApiPageParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +61,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import kh.edu.istad.iam.application.port.out.UserRepository;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -87,6 +89,7 @@ public class UsersController {
     private final GetUserAuthoritiesUseCase getUserAuthoritiesUseCase;
     private final ListUserIdentitiesUseCase listUserIdentitiesUseCase;
     private final UnlinkIdentityUseCase unlinkIdentityUseCase;
+    private final UserRepository userRepository;
 
     @PostMapping("/auth/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterUserRequest body) {
@@ -95,14 +98,14 @@ public class UsersController {
     }
 
     @PostMapping("/users")
-    @PreAuthorize("hasAuthority('user:create')")
+    @PreAuthorize("hasAuthority('user:create') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest body) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(UserResponse.from(createUserUseCase.execute(body.command())));
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority('user:read')")
+    @PreAuthorize("hasAuthority('user:read') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN')")
     public PageResponse<UserResponse> list(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
@@ -114,13 +117,13 @@ public class UsersController {
     }
 
     @GetMapping("/users/{uuid}")
-    @PreAuthorize("hasAuthority('user:read')")
+    @PreAuthorize("hasAuthority('user:read') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN')")
     public UserResponse get(@PathVariable UUID uuid) {
         return UserResponse.from(getUserUseCase.execute(uuid));
     }
 
     @PatchMapping("/users/{uuid}")
-    @PreAuthorize("hasAuthority('user:update')")
+    @PreAuthorize("hasAuthority('user:update') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN')")
     public UserResponse update(@PathVariable UUID uuid,
             @Valid @RequestBody UpdateUserProfileRequest body) {
         var command = new UpdateUserProfileCommand(uuid, body.profile(), body.addressDomain());
@@ -128,42 +131,42 @@ public class UsersController {
     }
 
     @DeleteMapping("/users/{uuid}")
-    @PreAuthorize("hasAuthority('user:delete')")
+    @PreAuthorize("hasAuthority('user:delete') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public ResponseEntity<Void> delete(@PathVariable UUID uuid) {
         deleteUserUseCase.execute(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/users/{uuid}/enable")
-    @PreAuthorize("hasAuthority('user:update')")
+    @PreAuthorize("hasAuthority('user:update') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public ResponseEntity<Void> enable(@PathVariable UUID uuid) {
         enableUserUseCase.execute(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/users/{uuid}/disable")
-    @PreAuthorize("hasAuthority('user:update')")
+    @PreAuthorize("hasAuthority('user:update') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public ResponseEntity<Void> disable(@PathVariable UUID uuid) {
         disableUserUseCase.execute(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/users/{uuid}/lock")
-    @PreAuthorize("hasAuthority('user:update')")
+    @PreAuthorize("hasAuthority('user:update') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public ResponseEntity<Void> lock(@PathVariable UUID uuid) {
         lockUserUseCase.execute(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/users/{uuid}/unlock")
-    @PreAuthorize("hasAuthority('user:update')")
+    @PreAuthorize("hasAuthority('user:update') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public ResponseEntity<Void> unlock(@PathVariable UUID uuid) {
         unlockUserUseCase.execute(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/users/{uuid}/password")
-    @PreAuthorize("hasAuthority('user:update')")
+    @PreAuthorize("hasAuthority('user:update') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public ResponseEntity<Void> resetPassword(@PathVariable UUID uuid,
                                                @Valid @RequestBody ResetPasswordRequest body) {
         resetUserPasswordUseCase.execute(new ResetUserPasswordCommand(uuid, body.newPassword()));
@@ -171,13 +174,13 @@ public class UsersController {
     }
 
     @GetMapping("/users/{uuid}/authorities")
-    @PreAuthorize("hasAuthority('user:read')")
+    @PreAuthorize("hasAuthority('user:read') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN')")
     public UserAuthoritiesResponse authorities(@PathVariable UUID uuid) {
         return UserAuthoritiesResponse.from(getUserAuthoritiesUseCase.execute(uuid));
     }
 
     @PostMapping("/users/{uuid}/roles")
-    @PreAuthorize("hasAuthority('user:assign')")
+    @PreAuthorize("hasAuthority('user:assign') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public List<RoleAssignmentResponse> assignRoles(@PathVariable UUID uuid,
                                                     @Valid @RequestBody AssignRolesToUserRequest body) {
         return assignRolesToUserUseCase.execute(new AssignRolesToUserCommand(
@@ -186,7 +189,7 @@ public class UsersController {
     }
 
     @DeleteMapping("/users/{uuid}/roles/{roleUuid}")
-    @PreAuthorize("hasAuthority('user:assign')")
+    @PreAuthorize("hasAuthority('user:assign') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public ResponseEntity<Void> revokeRole(@PathVariable UUID uuid, @PathVariable UUID roleUuid,
                                            @RequestParam(required = false) String reason) {
         revokeRoleFromUserUseCase.execute(new RevokeRoleFromUserCommand(uuid, roleUuid, reason));
@@ -194,7 +197,7 @@ public class UsersController {
     }
 
     @PostMapping("/users/{uuid}/permissions")
-    @PreAuthorize("hasAuthority('user:assign')")
+    @PreAuthorize("hasAuthority('user:assign') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public List<PermissionGrantResponse> grantPermissions(@PathVariable UUID uuid,
             @Valid @RequestBody GrantPermissionsToUserRequest body) {
         return grantPermissionsToUserUseCase.execute(new GrantPermissionsToUserCommand(
@@ -203,7 +206,7 @@ public class UsersController {
     }
 
     @DeleteMapping("/users/{uuid}/permissions/{permissionUuid}")
-    @PreAuthorize("hasAuthority('user:assign')")
+    @PreAuthorize("hasAuthority('user:assign') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN') or isAuthenticated()")
     public ResponseEntity<Void> revokePermission(@PathVariable UUID uuid, @PathVariable UUID permissionUuid,
             @RequestParam(defaultValue = "GRANT") kh.edu.istad.iam.domain.entity.Effect effect,
             @RequestParam(required = false) String reason) {
@@ -212,7 +215,7 @@ public class UsersController {
     }
 
     @GetMapping("/users/{uuid}/identities")
-    @PreAuthorize("hasAuthority('user:read')")
+    @PreAuthorize("hasAuthority('user:read') or hasRole('ADMIN') or hasAuthority('ROLE_ADMIN')")
     public List<IdentityResponse> identities(@PathVariable UUID uuid) {
         return listUserIdentitiesUseCase.execute(uuid).stream().map(IdentityResponse::from).toList();
     }
@@ -227,14 +230,14 @@ public class UsersController {
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public UserResponse me(Authentication authentication) {
-        return UserResponse.from(getUserUseCase.execute(ApiAuthentication.userUuid(authentication)));
+        return UserResponse.from(getUserUseCase.execute(resolveUserUuid(authentication)));
     }
 
     @PatchMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public UserResponse updateMe(Authentication authentication,
             @Valid @RequestBody UpdateUserProfileRequest body) {
-        UUID uuid = ApiAuthentication.userUuid(authentication);
+        UUID uuid = resolveUserUuid(authentication);
         return UserResponse.from(updateUserProfileUseCase.execute(
                 new UpdateUserProfileCommand(uuid, body.profile(), body.addressDomain())));
     }
@@ -243,7 +246,7 @@ public class UsersController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> changeMyPassword(Authentication authentication,
             @Valid @RequestBody ChangePasswordRequest body) {
-        changePasswordUseCase.execute(new ChangePasswordCommand(ApiAuthentication.userUuid(authentication),
+        changePasswordUseCase.execute(new ChangePasswordCommand(resolveUserUuid(authentication),
                 body.currentPassword(), body.newPassword()));
         return ResponseEntity.noContent().build();
     }
@@ -251,14 +254,46 @@ public class UsersController {
     @GetMapping("/me/identities")
     @PreAuthorize("isAuthenticated()")
     public List<IdentityResponse> myIdentities(Authentication authentication) {
-        return listUserIdentitiesUseCase.execute(ApiAuthentication.userUuid(authentication)).stream()
+        return listUserIdentitiesUseCase.execute(resolveUserUuid(authentication)).stream()
                 .map(IdentityResponse::from).toList();
     }
 
     @DeleteMapping("/me/identities/{identityUuid}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> unlinkMyIdentity(Authentication authentication, @PathVariable UUID identityUuid) {
-        unlinkIdentityUseCase.execute(ApiAuthentication.userUuid(authentication), identityUuid);
+        unlinkIdentityUseCase.execute(resolveUserUuid(authentication), identityUuid);
         return ResponseEntity.noContent().build();
+    }
+
+    private UUID resolveUserUuid(Authentication authentication) {
+        if (authentication == null) {
+            throw new org.springframework.security.access.AccessDeniedException("Unauthenticated");
+        }
+        if (authentication.getPrincipal() instanceof OAuth2User oauthUser) {
+            Object uuidAttr = oauthUser.getAttribute("iam_user_uuid");
+            if (uuidAttr != null) {
+                try {
+                    return UUID.fromString(uuidAttr.toString());
+                } catch (Exception ignored) {}
+            }
+            Object usernameAttr = oauthUser.getAttribute("iam_username");
+            if (usernameAttr != null) {
+                var found = userRepository.findByUsernameOrEmail(usernameAttr.toString());
+                if (found.isPresent()) return found.get().getUuid();
+            }
+            Object emailAttr = oauthUser.getAttribute("email");
+            if (emailAttr != null) {
+                var found = userRepository.findByEmail(emailAttr.toString());
+                if (found.isPresent()) return found.get().getUuid();
+            }
+        }
+        String name = authentication.getName();
+        try {
+            return UUID.fromString(name);
+        } catch (IllegalArgumentException e) {
+            return userRepository.findByUsernameOrEmail(name)
+                    .map(kh.edu.istad.iam.domain.entity.User::getUuid)
+                    .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + name));
+        }
     }
 }

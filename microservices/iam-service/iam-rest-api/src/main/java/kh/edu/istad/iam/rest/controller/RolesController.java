@@ -15,6 +15,7 @@ import kh.edu.istad.iam.application.usecase.role.AssignPermissionsToRoleUseCase;
 import kh.edu.istad.iam.application.usecase.role.CreateRoleUseCase;
 import kh.edu.istad.iam.application.usecase.role.DeactivateRoleUseCase;
 import kh.edu.istad.iam.application.usecase.role.DeleteRoleUseCase;
+import kh.edu.istad.iam.application.usecase.role.GetRolePermissionsUseCase;
 import kh.edu.istad.iam.application.usecase.role.GetRoleUseCase;
 import kh.edu.istad.iam.application.usecase.role.ListRolesUseCase;
 import kh.edu.istad.iam.application.usecase.role.RevokePermissionFromRoleUseCase;
@@ -25,7 +26,7 @@ import kh.edu.istad.iam.rest.dto.response.PageResponse;
 import kh.edu.istad.iam.rest.dto.response.PermissionAssignmentResponse;
 import kh.edu.istad.iam.rest.dto.response.RoleResponse;
 import kh.edu.istad.iam.rest.dto.request.UpdateRoleRequest;
-import kh.edu.istad.iam.rest.support.ApiPageParameters;
+import kh.edu.istad.iam.rest.util.ApiPageParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,7 @@ public class RolesController {
     private final DeactivateRoleUseCase deactivateRoleUseCase;
     private final AssignPermissionsToRoleUseCase assignPermissionsToRoleUseCase;
     private final RevokePermissionFromRoleUseCase revokePermissionFromRoleUseCase;
+    private final GetRolePermissionsUseCase getRolePermissionsUseCase;
 
     @PostMapping
     @PreAuthorize("hasAuthority('role:create')")
@@ -123,5 +125,12 @@ public class RolesController {
                                                   @RequestParam(required = false) String reason) {
         revokePermissionFromRoleUseCase.execute(new RevokePermissionFromRoleCommand(uuid, permissionUuid, reason));
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{uuid}/permissions")
+    @PreAuthorize("hasAuthority('role:read')")
+    public List<PermissionAssignmentResponse> getPermissions(@PathVariable UUID uuid) {
+        return getRolePermissionsUseCase.execute(uuid).stream()
+                .map(PermissionAssignmentResponse::from).toList();
     }
 }

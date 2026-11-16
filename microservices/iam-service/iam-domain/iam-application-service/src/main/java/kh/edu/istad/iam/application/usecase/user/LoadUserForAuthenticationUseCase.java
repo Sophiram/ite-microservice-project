@@ -28,6 +28,12 @@ public final class LoadUserForAuthenticationUseCase {
 
         public AuthUserResult execute(String usernameOrEmail) {
             User user = UseCaseSupport.require(users.findByUsernameOrEmail(usernameOrEmail), "User");
+            if (!user.isAccountNonLocked()) {
+                throw new DomainException(ErrorCode.ACCOUNT_LOCKED, "User account is locked");
+            }
+            if (!user.isEnabled() || user.isDeleted()) {
+                throw new DomainException(ErrorCode.ACCOUNT_DISABLED, "User account is disabled or deactivated");
+            }
             if (!user.canAuthenticate()) {
                 throw new DomainException(ErrorCode.ACCOUNT_DISABLED, "User cannot authenticate");
             }

@@ -1,0 +1,12 @@
+plugins {
+    alias(libs.plugins.spring.common.conventions)
+}
+
+dependencies {
+    api libs.istad.common.domain
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}

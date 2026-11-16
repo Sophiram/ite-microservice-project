@@ -1,0 +1,15 @@
+plugins {
+    alias(libs.plugins.spring.common.conventions)
+}
+
+dependencies {
+    api libs.reactor.core
+    api libs.payment.domain.core
+    api libs.istad.common.domain
+    api 'org.springframework:spring-context'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'io.projectreactor:reactor-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}

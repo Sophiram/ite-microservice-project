@@ -1,7 +1,13 @@
 server:
   port: 9090
+  forward-headers-strategy: framework
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
   application:
     name: business-service
   profiles:
@@ -9,8 +15,20 @@ spring:
   cloud:
     consul:
       discovery:
-        health-check-url: http://host.docker.internal:${server.port}/actuator/health
-        ip-address: 127.0.0.1
-        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${server.port}
         service-name: ${spring.application.name}
-        instance-id: ${spring.application.name}-${random.value}
+        prefer-ip-address: true
+        ip-address: 127.0.0.1
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        health-check-interval: 10s
+        deregister-critical-service-after: 1m
+        health-check-critical-timeout: 1m
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

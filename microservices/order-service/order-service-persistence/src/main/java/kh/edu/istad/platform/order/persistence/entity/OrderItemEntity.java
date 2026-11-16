@@ -1,9 +1,6 @@
 package kh.edu.istad.platform.order.persistence.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Table;
@@ -15,12 +12,12 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table("order_items")
 public class OrderItemEntity {
     @Id
     @Embedded.Nullable
     private OrderItemEntityId orderItemEntityId;
-    private UUID orderId;
     private UUID productId;
     private Integer quantity;
     private BigDecimal price;

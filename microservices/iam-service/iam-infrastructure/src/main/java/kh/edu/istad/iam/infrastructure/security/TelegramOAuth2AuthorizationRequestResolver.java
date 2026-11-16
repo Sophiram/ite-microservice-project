@@ -58,6 +58,27 @@ public class TelegramOAuth2AuthorizationRequestResolver implements OAuth2Authori
                     .additionalParameters(additional)
                     .build();
         }
+        if ("google".equalsIgnoreCase(regId)) {
+            Map<String, Object> additional = new LinkedHashMap<>(req.getAdditionalParameters());
+            additional.put("prompt", "select_account");
+            return OAuth2AuthorizationRequest.from(req)
+                    .additionalParameters(additional)
+                    .build();
+        }
+        if ("github".equalsIgnoreCase(regId)) {
+            Map<String, Object> additional = new LinkedHashMap<>(req.getAdditionalParameters());
+            additional.put("prompt", "consent");
+            return OAuth2AuthorizationRequest.from(req)
+                    .additionalParameters(additional)
+                    .build();
+        }
+        if ("facebook".equalsIgnoreCase(regId)) {
+            Map<String, Object> additional = new LinkedHashMap<>(req.getAdditionalParameters());
+            additional.put("auth_type", "reauthenticate");
+            return OAuth2AuthorizationRequest.from(req)
+                    .additionalParameters(additional)
+                    .build();
+        }
         return req;
     }
 }

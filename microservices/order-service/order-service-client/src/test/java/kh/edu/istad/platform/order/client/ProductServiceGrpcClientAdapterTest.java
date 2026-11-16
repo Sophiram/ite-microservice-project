@@ -9,14 +9,16 @@ import io.grpc.stub.StreamObserver;
 import kh.edu.istad.common.domain.valueobject.BusinessId;
 import kh.edu.istad.common.domain.valueobject.OrderId;
 import kh.edu.istad.common.domain.valueobject.ProductId;
-import kh.edu.istad.common.grpc.product.v1.BatchGetProductsRequest;
-import kh.edu.istad.common.grpc.product.v1.BatchGetProductsResponse;
-import kh.edu.istad.common.grpc.product.v1.Product;
-import kh.edu.istad.common.grpc.product.v1.ProductServiceGrpc;
-import kh.edu.istad.common.grpc.product.v1.ReleaseStockRequest;
-import kh.edu.istad.common.grpc.product.v1.ReleaseStockResponse;
-import kh.edu.istad.common.grpc.product.v1.ReserveStockRequest;
-import kh.edu.istad.common.grpc.product.v1.ReserveStockResponse;
+import build.buf.gen.istad.common.v1.Money;
+import build.buf.gen.istad.product.v1.BatchGetProductsRequest;
+import build.buf.gen.istad.product.v1.BatchGetProductsResponse;
+import build.buf.gen.istad.product.v1.Product;
+import build.buf.gen.istad.product.v1.ProductServiceGrpc;
+import build.buf.gen.istad.product.v1.ProductStatus;
+import build.buf.gen.istad.product.v1.ReleaseStockRequest;
+import build.buf.gen.istad.product.v1.ReleaseStockResponse;
+import build.buf.gen.istad.product.v1.ReserveStockRequest;
+import build.buf.gen.istad.product.v1.ReserveStockResponse;
 import kh.edu.istad.platform.order.client.adapter.ProductServiceGrpcClientAdapter;
 import kh.edu.istad.platform.order.domain.dto.ProductInfo;
 import kh.edu.istad.platform.order.domain.dto.StockReservationItem;
@@ -53,10 +55,10 @@ class ProductServiceGrpcClientAdapterTest {
                 observer.onNext(BatchGetProductsResponse.newBuilder().addProducts(Product.newBuilder()
                         .setId(expectedId.toString()).setBusinessId(expectedBusinessId.toString())
                         .setSku("SKU-1").setName("Product").setDescription("Description")
-                        .setUnitPrice(kh.edu.istad.common.grpc.v1.Money.newBuilder()
+                        .setUnitPrice(Money.newBuilder()
                                 .setAmount("12.50").setCurrency("USD"))
                         .setAvailableQuantity(4)
-                        .setStatus(kh.edu.istad.common.grpc.product.v1.ProductStatus.PRODUCT_STATUS_ACTIVE)
+                        .setStatus(ProductStatus.PRODUCT_STATUS_ACTIVE)
                         .build()).build());
                 observer.onCompleted();
             }

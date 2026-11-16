@@ -1,0 +1,15 @@
+plugins {
+//    id 'spring-common-conventions'
+    alias(libs.plugins.spring.common.conventions)
+}
+
+dependencies {
+//    api 'kh.edu.istad:order-application-service'
+    api libs.order.application.service
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'io.projectreactor:reactor-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}

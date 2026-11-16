@@ -13,6 +13,7 @@ This guide provides end-to-end instructions for testing all microservices in the
 | **Order Service** | HTTP (WebFlux) | `http://localhost:9092` | None (Client caller) | PostgreSQL (`db_order`, port `9543`) |
 | **Product Service** | HTTP REST | `http://localhost:9093` | None | PostgreSQL (`db_product`, port `9543`) |
 | **Product Service (gRPC)** | gRPC | `localhost:1013` | None | PostgreSQL (`db_product`, port `9543`) |
+| **Payment Service (Kafka Reactive)** | HTTP / Kafka | `http://localhost:9094` | None | PostgreSQL (`db_payment`, port `9543`), Kafka (`localhost:9099`) |
 | **Payment REST Bridge** | HTTP | `http://localhost:1011` | None | In-Memory / gRPC bridge |
 | **Payment Service (gRPC)** | gRPC | `localhost:1012` | None | In-Memory |
 | **Gateway Server** | HTTP | `http://localhost:9999` | Route-specific | Consul Discovery |
@@ -22,7 +23,8 @@ This guide provides end-to-end instructions for testing all microservices in the
 ## 2. Quick Setup & Postman Import
 
 Ready-to-use Postman files are located in the repository at:
-- **Collection**: [istad-microservices.postman_collection.json](file:///D:/MicroserviceProject/istad-ite-project/microservices/postman/istad-microservices.postman_collection.json)
+- **Comprehensive Collection**: [istad-microservices.postman_collection.json](file:///D:/MicroserviceProject/istad-ite-project/microservices/postman/istad-microservices.postman_collection.json)
+- **Order & Payment Kafka Collection**: [order-payment-kafka.postman_collection.json](file:///D:/MicroserviceProject/istad-ite-project/microservices/postman/order-payment-kafka.postman_collection.json) (See [Kafka Order & Payment Guide](file:///D:/MicroserviceProject/istad-ite-project/microservices/KAFKA-ORDER-PAYMENT-GUIDE.md))
 - **Environment**: [istad-local.postman_environment.json](file:///D:/MicroserviceProject/istad-ite-project/microservices/postman/istad-local.postman_environment.json)
 
 ### How to Import:
