@@ -16,7 +16,7 @@ public record UpdateUserProfileRequest(
             String middleName,
             @Size(max = 100)
             String nickname,
-            @Pattern(regexp = "female|male|other")
+            @Pattern(regexp = "^$|(?i)(female|male|other)$")
             String gender,
             LocalDate birthdate,
             @Size(max = 500)
@@ -27,9 +27,9 @@ public record UpdateUserProfileRequest(
             String websiteUrl,
             @Size(max = 50)
             String zoneinfo,
-            @Pattern(regexp = "en|km")
+            @Pattern(regexp = "^$|en|km")
             String locale,
-            @Pattern(regexp = "^$|^\\+[1-9][0-9]{7,14}$")
+            @Pattern(regexp = "^$|^\\+?[0-9\\s\\-\\(\\)]{7,20}$")
             String phoneNumber,
             @Valid AddressRequest address)
 {

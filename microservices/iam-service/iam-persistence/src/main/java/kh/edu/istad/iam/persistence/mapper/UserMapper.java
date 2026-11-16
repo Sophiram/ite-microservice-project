@@ -52,7 +52,8 @@ public final class UserMapper {
         entity.setZoneinfo(profile == null ? null : profile.zoneinfo());
         entity.setLocale(profile == null || profile.locale() == null || profile.locale().isBlank()
                 ? "en" : profile.locale());
-        entity.setPhoneNumber(profile == null ? null : profile.phoneNumber());
+        entity.setPhoneNumber(profile == null || profile.phoneNumber() == null || profile.phoneNumber().isBlank()
+                ? null : profile.phoneNumber().trim());
         Address address = domain.getAddress();
         entity.setAddressStreetAddress(address == null ? null : address.streetAddress());
         entity.setAddressLocality(address == null ? null : address.locality());

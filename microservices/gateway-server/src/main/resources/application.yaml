@@ -35,21 +35,29 @@ spring:
                 - Path=/jph/**
               filters:
                 - RewritePath=/jph/?(?<segment>.*), /$\{segment}
-            - id: nextjs
-              uri: http://localhost:3000
-              predicates:
-                - Path=/**
+#            - id: nextjs
+#              uri: http://localhost:3000
+#              predicates:
+#                - Path=/**
 #              filters:
 #                - RewritePath=/jph/?(?<segment>.*), /$\{segment}
           default-filters:
             - SaveSession
+            - TokenRelay
+          trusted-proxies: ".*"
+
     consul:
       discovery:
-        health-check-url: http://host.docker.internal:${server.port}/actuator/health
-        ip-address: 127.0.0.1
-        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${server.port}
         service-name: ${spring.application.name}
-        instance-id: ${spring.application.name}-${random.value}
+        prefer-ip-address: true
+        ip-address: 127.0.0.1
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        health-check-interval: 10s
+        deregister-critical-service-after: 1m
+        health-check-critical-timeout: 1m
+
+
   security:
     oauth2:
       resourceserver:
@@ -74,7 +82,28 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health,gateway"
+        include: "health,gateway,info"
   endpoint:
     gateway:
       access: read_only
+    health:
+      show-details: always
+
+scalar:
+  sources:
+    - title: Order Service
+      url: /order-service/v3/api-docs
+    - title: Business Service
+      url: /business-service/v3/api-docs
+  enabled: true
+
+#springdoc:
+#  swagger-ui:
+#    urls:
+#      - name: Order Service
+#        url: /order-service/v3/api-docs
+#      - name: Business Service
+#        url: /business-service/v3/api-docs
+#    enabled: true
+#  api-docs:
+#    enabled: true

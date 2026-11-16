@@ -1,5 +1,5 @@
 [versions]
-java-language-version = "25"
+java-language-version = "24"
 spring-boot-gradle-plugin = "4.1.1"
 dependency-management-plugin = "1.1.7"
 springdoc-openapi-starter-webmvc-ui = "3.2.0"
@@ -72,6 +72,7 @@ iam-infrastructure = { module = "kh.edu.istad:iam-infrastructure", version.ref =
 iam-rest-api = { module = "kh.edu.istad:iam-rest-api", version.ref = "istad-version" }
 iam-web = { module = "kh.edu.istad:iam-web", version.ref = "istad-version" }
 iam-main = { module = "kh.edu.istad:iam-main", version.ref = "istad-version" }
+
 
 [bundles]
 gradle-dependency-management = [

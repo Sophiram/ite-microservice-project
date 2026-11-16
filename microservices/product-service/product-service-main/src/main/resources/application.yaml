@@ -22,9 +22,23 @@ spring:
         enabled: true
       reflection:
         enabled: false
+  cloud:
+    consul:
+      discovery:
+        instance-id: ${spring.application.name}:${server.port}
+        service-name: ${spring.application.name}
+        prefer-ip-address: true
+        ip-address: 127.0.0.1
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        health-check-interval: 10s
+        deregister-critical-service-after: 1m
+        health-check-critical-timeout: 1m
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+  endpoint:
+    health:
+      show-details: always

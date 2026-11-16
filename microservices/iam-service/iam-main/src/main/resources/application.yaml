@@ -10,10 +10,40 @@ spring:
   application:
     name: ${SPRING_APPLICATION_NAME:iam-service}
 
+  cloud:
+    consul:
+      discovery:
+        instance-id: ${spring.application.name}:${server.port}
+        service-name: ${spring.application.name}
+        prefer-ip-address: true
+        ip-address: 127.0.0.1
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        health-check-interval: 10s
+        deregister-critical-service-after: 1m
+        health-check-critical-timeout: 1m
   security:
     oauth2:
       authorizationserver:
         issuer: ${OAUTH2_ISSUER_URI:http://localhost:9000}
+
+  mail:
+    host: ${MAIL_HOST:${SPRING_MAIL_HOST:smtp.gmail.com}}
+    port: ${MAIL_PORT:${SPRING_MAIL_PORT:465}}
+    username: ${MAIL_USERNAME:${SPRING_MAIL_USERNAME:sornsophiram11@gmail.com}}
+    password: ${MAIL_PASSWORD:${SPRING_MAIL_PASSWORD:zzwfimapycksmzyo}}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          socketFactory:
+            port: ${MAIL_PORT:${SPRING_MAIL_PORT:465}}
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:9543/db_iam}
@@ -39,12 +69,6 @@ spring:
     parameters:
       iam.admin.password-hash: ${IAM_ADMIN_PASSWORD_HASH:$2a$12$rbSdGCVc7Ei/yjL7fvs9PuHTQYbkXZ.3SyRjl.Oy9DCdWvaqQhLJi}
 
-gg:
-  jte:
-    development-mode: true
-    template-location: ../iam-web/src/main/jte
-    class-directory: ../iam-web/build/jte-classes
-
 iam:
   admin:
     password-hash: ${IAM_ADMIN_PASSWORD_HASH:}
@@ -53,3 +77,12 @@ iam:
     dcr-client-secret: ${IAM_DCR_CLIENT_SECRET:}
     browser-client-id: ${IAM_BROWSER_CLIENT_ID:iam-browser}
     browser-redirect-uri: ${IAM_BROWSER_REDIRECT_URI:https://oauth.pstmn.io/v1/callback}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

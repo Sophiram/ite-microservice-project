@@ -22,7 +22,7 @@ import kh.edu.istad.iam.persistence.adapter.IdentityPersistenceAdapter;
 import kh.edu.istad.iam.persistence.adapter.PermissionPersistenceAdapter;
 import kh.edu.istad.iam.persistence.adapter.RolePersistenceAdapter;
 import kh.edu.istad.iam.persistence.adapter.UserPersistenceAdapter;
-import kh.edu.istad.iam.persistence.config.JpaAuditConfiguration;
+import kh.edu.istad.iam.persistence.config.JpaAuditConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers(disabledWithoutDocker = true)
 @ContextConfiguration(classes = IamPersistenceIntegrationTest.TestApplication.class)
-@Import({JpaAuditConfiguration.class, UserPersistenceAdapter.class, RolePersistenceAdapter.class,
+@Import({JpaAuditConfig.class, UserPersistenceAdapter.class, RolePersistenceAdapter.class,
         PermissionPersistenceAdapter.class, IdentityPersistenceAdapter.class, AssignmentPersistenceAdapter.class})
 class IamPersistenceIntegrationTest {
     @Container

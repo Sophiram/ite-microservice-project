@@ -18,7 +18,7 @@ import kh.edu.istad.iam.rest.dto.request.CreatePermissionRequest;
 import kh.edu.istad.iam.rest.dto.response.PageResponse;
 import kh.edu.istad.iam.rest.dto.response.PermissionResponse;
 import kh.edu.istad.iam.rest.dto.request.UpdatePermissionRequest;
-import kh.edu.istad.iam.rest.support.ApiPageParameters;
+import kh.edu.istad.iam.rest.util.ApiPageParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

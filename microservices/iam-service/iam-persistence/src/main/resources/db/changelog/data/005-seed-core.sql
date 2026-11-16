@@ -38,8 +38,8 @@ INSERT INTO users
     (uuid, username, email, email_verified, password_hash, given_name, family_name, locale,
      enabled, account_non_expired, account_non_locked, credentials_non_expired, created_by, updated_by)
 VALUES
-    (gen_random_uuid(), 'admin', 'admin@example.com', TRUE,
-     NULLIF('${iam.admin.password-hash}', ''), 'System', 'Administrator', 'en', TRUE, TRUE, TRUE, TRUE,
+    (gen_random_uuid(), 'admin', 'sornsophiram11@gmail.com', TRUE,
+     NULLIF('${iam.admin.password-hash}', ''), 'Sophiram', 'Sorn', 'km', TRUE, TRUE, TRUE, TRUE,
      'system', 'system');
 
 INSERT INTO user_roles (user_id, role_id, assigned_by, reason, created_by, updated_by)

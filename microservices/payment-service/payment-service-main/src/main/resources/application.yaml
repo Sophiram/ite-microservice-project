@@ -43,11 +43,14 @@ spring:
           wait-time: 5
       discovery:
         enabled: true
-        health-check-url: http://host.docker.internal:${server.port}/actuator/health
-        ip-address: 127.0.0.1
+        instance-id: ${spring.application.name}:${server.port}
+        service-name: ${spring.application.name}
         prefer-ip-address: true
-        service-name: payment-service
-        instance-id: ${spring.application.name}-${random.value}
+        ip-address: 127.0.0.1
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        health-check-interval: 10s
+        deregister-critical-service-after: 1m
+        health-check-critical-timeout: 1m
 
 management:
   endpoints:

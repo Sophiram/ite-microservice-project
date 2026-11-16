@@ -27,5 +27,5 @@ include 'iam-domain:iam-application-service'    // use cases, commands, results,
 include 'iam-persistence'                       // Spring Data JPA adapters + Liquibase
 include 'iam-infrastructure'                    // Spring Authorization Server adapter
 include 'iam-rest-api'                          // REST controllers, DTOs, API security
-include 'iam-web'                               // JTE pages + i18n
+include 'iam-web'                               // Frontend React + Web adapter
 include 'iam-main'                              // Spring Boot entry point + wiring

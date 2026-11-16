@@ -34,11 +34,14 @@ spring:
   cloud:
     consul:
       discovery:
-        instance-id: ${spring.application.name}-${random.value}
-        health-check-url: http://host.docker.internal:${server.port}/actuator/health
-        ip-address: 127.0.0.1
+        instance-id: ${spring.application.name}:${server.port}
+        service-name: ${spring.application.name}
         prefer-ip-address: true
-        service-name: customer-service
+        ip-address: 127.0.0.1
+        health-check-url: http://host.docker.internal:${server.port}/actuator/health
+        health-check-interval: 10s
+        deregister-critical-service-after: 1m
+        health-check-critical-timeout: 1m
   mongodb:
     host: localhost
     port: 2026
@@ -52,3 +55,12 @@ spring:
       - d
     database: customer_db
     authentication-database: admin
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
